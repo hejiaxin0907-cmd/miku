@@ -1,0 +1,48 @@
+{
+  "name": "米库奶牛猫 Logo 使用规范",
+  "version": "1.0",
+  "masterAssets": {
+    "standard": "45-cow-cat-logo-hat-slightly-lighter.png",
+    "optionalGlow": "50-cow-cat-logo-glow-final.png",
+    "masterCanvas": "1024x1024"
+  },
+  "colors": {
+    "signatureMint": "#6CD8C2",
+    "hatMint": "#83DFCC",
+    "ivory": "#FFFDF7",
+    "charcoal": "#171717"
+  },
+  "clearSpace": {
+    "unit": "x",
+    "definition": "x 等于帽顶小圆球直径",
+    "minimum": "四周至少保留 1x"
+  },
+  "size": {
+    "master": "1024px",
+    "recommended": "64px 及以上",
+    "minimum": "24px",
+    "smallSizeRule": "32px 以下只使用标准无发光版"
+  },
+  "glow": {
+    "status": "optional",
+    "useOn": ["#6CD8C2 等彩色背景上的 App 图标、启动页、营销物料"],
+    "doNotUseOn": ["正式 Logo、印刷稿、黑白稿、白色背景"],
+    "reference": "50-cow-cat-logo-glow-final.png",
+    "recommendedConstruction": {
+      "inner": "#FFFFFF / 55% opacity / 4px blur at 1024px",
+      "outer": "#C9F1E8 / 32% opacity / 12px blur at 1024px",
+      "note": "发光必须位于猫头后方，不做硬描边"
+    }
+  },
+  "rules": {
+    "standardPriority": "无发光标准版优先",
+    "background": "保持背景 #6CD8C2 时，帽子使用比背景更浅的 #83DFCC",
+    "prohibited": [
+      "给猫头增加黑色或彩色描边",
+      "给帽子使用渐变、纹理或高光",
+      "拉伸、压扁、旋转或裁切猫头",
+      "改变黑色双耳、黑色奶牛斑和白色脸部的关系",
+      "把可选发光版当作正式 Logo 使用"
+    ]
+  }
+}
