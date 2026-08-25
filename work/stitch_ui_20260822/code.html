@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+@layer base {
+  html, body { margin: 0; padding: 0; }
+  body { overscroll-behavior: none; }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
+}
+::-webkit-scrollbar { display: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary-container": "#6cf8bb",
+                "inverse-primary": "#bec6e0",
+                "on-secondary-container": "#00714d",
+                "tertiary-fixed": "#d5e3fd",
+                "outline": "#76777d",
+                "on-secondary": "#ffffff",
+                "surface-bright": "#f7f9fb",
+                "on-primary": "#ffffff",
+                "inverse-on-surface": "#eff1f3",
+                "surface-container-highest": "#e0e3e5",
+                "on-tertiary": "#ffffff",
+                "background": "#f7f9fb",
+                "on-surface": "#191c1e",
+                "surface-tint": "#565e74",
+                "on-primary-fixed-variant": "#3f465c",
+                "primary-fixed-dim": "#bec6e0",
+                "on-primary-container": "#7c839b",
+                "surface-container": "#eceef0",
+                "on-secondary-fixed-variant": "#005236",
+                "on-error-container": "#93000a",
+                "tertiary-container": "#0d1c2f",
+                "surface-container-high": "#e6e8ea",
+                "on-primary-fixed": "#131b2e",
+                "on-error": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "secondary": "#006c49",
+                "secondary-fixed": "#6ffbbe",
+                "secondary-fixed-dim": "#4edea3",
+                "on-secondary-fixed": "#002113",
+                "surface-container-low": "#f2f4f6",
+                "primary": "#000000",
+                "inverse-surface": "#2d3133",
+                "primary-fixed": "#dae2fd",
+                "on-surface-variant": "#45464d",
+                "on-tertiary-fixed": "#0d1c2f",
+                "error": "#ba1a1a",
+                "outline-variant": "#c6c6cd",
+                "surface-dim": "#d8dadc",
+                "on-background": "#191c1e",
+                "on-tertiary-fixed-variant": "#3a485c",
+                "on-tertiary-container": "#76859b",
+                "primary-container": "#131b2e",
+                "surface-variant": "#e0e3e5",
+                "surface": "#f7f9fb",
+                "error-container": "#ffdad6",
+                "tertiary": "#000000",
+                "tertiary-fixed-dim": "#b9c7e0"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "unit": "4px",
+                "margin-desktop": "40px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "container-max": "1280px"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Hanken Grotesk"
+                ],
+                "label-md": [
+                        "Geist"
+                ],
+                "display-lg": [
+                        "Hanken Grotesk"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "code-sm": [
+                        "Geist"
+                ],
+                "headline-lg-mobile": [
+                        "Hanken Grotesk"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Hanken Grotesk"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "code-sm": [
+                        "13px",
+                        {
+                                "lineHeight": "18px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+</head>
+<body class="bg-background font-body-md text-on-surface flex min-h-screen">
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col border-r border-outline-variant/30">
+<div class="px-6 pt-8 pb-6 mb-4">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">hub</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight">米库</span>
+</div>
+<p class="text-label-md font-label-md text-on-surface-variant opacity-80">全链路营销系统</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a aria-current="page" class="flex items-center px-4 py-3.5 rounded-xl transition-all group bg-primary text-on-primary shadow-sm" data-path="index" href="#">
+<span class="material-symbols-outlined mr-4 group-hover:scale-110 transition-transform">grid_view</span>
+<span class="font-label-md">首页</span>
+</a>
+<a class="flex items-center px-4 py-3.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="templates" href="#">
+<span class="material-symbols-outlined mr-4 group-hover:scale-110 transition-transform">dashboard_customize</span>
+<span class="font-label-md">模板</span>
+</a>
+<a class="flex items-center px-4 py-3.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="tools" href="#">
+<span class="material-symbols-outlined mr-4 group-hover:scale-110 transition-transform">build</span>
+<span class="font-label-md">工具</span>
+</a>
+<a class="flex items-center px-4 py-3.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="tasks" href="#">
+<span class="material-symbols-outlined mr-4 group-hover:scale-110 transition-transform">assignment_turned_in</span>
+<span class="font-label-md">任务</span>
+</a>
+<a class="flex items-center px-4 py-3.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group" data-path="my-profile" href="#">
+<span class="material-symbols-outlined mr-4 group-hover:scale-110 transition-transform">account_circle</span>
+<span class="font-label-md">我的</span>
+</a>
+<div class="py-4 px-4">
+<div class="h-px bg-outline-variant/50 w-full mb-6"></div>
+<p class="text-label-md font-label-md text-on-surface-variant mb-2 opacity-70">最近</p>
+<div class="space-y-1">
+<a class="block px-4 py-2 text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">季度营销分析报告</a>
+<a class="block px-4 py-2 text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">小红书投放策略</a>
+</div>
+</div>
+</nav>
+<div class="px-4 py-6">
+<div class="bg-surface-container rounded-xl p-3 flex items-center gap-2 border border-outline-variant/30">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-label-md font-label-md text-on-surface truncate">首席营销官</p>
+<p class="text-code-sm text-on-surface-variant truncate">专业版会员</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] shrink-0 hover:text-primary cursor-pointer transition-colors">settings</span>
+</div>
+</div>
+</aside>
+<div class="flex-1 ml-64 flex flex-col min-w-0">
+<header class="sticky top-0 h-16 bg-background/80 backdrop-blur-xl z-40 flex items-center justify-between px-8 border-b border-outline-variant/20">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="text-body-md font-body-md">搜索功能、数据或模板...</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<div class="w-2 h-2 rounded-full bg-error"></div>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+</div>
+</div>
+</header>
+<main class="relative flex-1 bg-background flex flex-col items-center w-full">
+<div class="w-full max-w-container-max px-8 pb-24">
+<!-- Hero Section -->
+<section class="flex flex-col items-center justify-center pt-20 pb-12 relative w-full">
+<div class="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center -z-10">
+<div class="w-[800px] h-[800px] rounded-full bg-gradient-to-tr from-primary-container/5 via-surface-variant/20 to-transparent blur-[120px] opacity-60"></div>
+<div class="absolute -right-20 top-10 w-[400px] h-[400px] rounded-full bg-gradient-to-bl from-secondary-container/10 to-transparent blur-[80px]"></div>
+</div>
+<div class="text-center relative w-full">
+<h1 class="text-display-lg font-display-lg text-on-surface tracking-tight leading-tight max-w-4xl mx-auto mb-6">
+        从想法到营销结果，一站式交付
+      </h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">
+        将复杂的营销策略转化为可执行的智能方案，让创意落地更简单。
+      </p>
+</div>
+</section>
+<!-- Interactive Input Area -->
+<section class="max-w-4xl mx-auto w-full relative z-10 mb-20">
+<!-- Layered Cards -->
+<div class="flex items-end justify-center -mb-8 relative z-0">
+<!-- Left Card -->
+<div class="w-36 py-4 bg-surface-container-lowest rounded-t-xl rounded-b-md shadow-sm border border-outline-variant/30 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:-translate-y-4 rotate-[-6deg] translate-x-4 translate-y-2 relative z-0">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant">smart_toy</span>
+<span class="font-label-md text-on-surface-variant">Agent模式</span>
+</div>
+<!-- Center Card -->
+<div class="w-40 py-5 bg-surface-container-lowest rounded-t-xl rounded-b-md shadow-sm border border-outline-variant/30 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:-translate-y-4 relative z-0">
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary-container rounded-t-xl opacity-80"></div>
+<span class="material-symbols-outlined text-[28px] text-primary" style="font-variation-settings: 'FILL' 1;">image</span>
+<span class="font-label-md font-semibold text-primary">图片生成</span>
+</div>
+<!-- Right Card -->
+<div class="w-36 py-4 bg-surface-container-lowest rounded-t-xl rounded-b-md shadow-sm border border-outline-variant/30 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:-translate-y-4 rotate-[6deg] -translate-x-4 translate-y-2 relative z-0">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant">movie</span>
+<span class="font-label-md text-on-surface-variant">视频生成</span>
+</div>
+</div>
+<!-- Main Input Container -->
+<div class="bg-surface-container-lowest rounded-3xl shadow-lg border border-outline-variant/30 relative z-10 overflow-hidden focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10 transition-all duration-500 pt-6">
+<!-- Input Field -->
+<textarea class="w-full bg-transparent border-none outline-none resize-none px-8 pt-2 pb-4 min-h-[120px] text-body-lg font-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0" placeholder="请告诉我你的想法，我来为你实现..."></textarea>
+<!-- Bottom Controls -->
+<div class="px-8 pb-6 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-full bg-surface hover:bg-surface-container text-on-surface-variant flex items-center gap-2 transition-colors border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span class="font-label-md">选择需求</span>
+</button>
+<button class="px-4 py-2 rounded-full bg-surface hover:bg-surface-container text-on-surface-variant flex items-center gap-2 transition-colors border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="font-label-md">生成设置</span>
+</button>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary hover:bg-primary/90 text-on-primary flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 group">
+<span class="material-symbols-outlined text-[24px] group-hover:-translate-y-1 transition-transform">arrow_upward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Popular Cases Section -->
+<section class="max-w-6xl mx-auto w-full">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">热门案例</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">发现经过市场验证的成功营销路径</p>
+</div>
+<a class="flex items-center gap-1 text-label-md font-label-md text-primary hover:opacity-80 transition-opacity group" href="#">
+        查看模板库
+        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Case Card 1 -->
+<a class="group relative rounded-2xl bg-surface-container-lowest p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-outline-variant/20 hover:border-primary/30 flex flex-col h-full min-h-[200px]" href="#">
+<div class="absolute inset-0 bg-gradient-to-br from-surface/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface text-[20px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<h3 class="text-body-lg font-headline-md text-on-surface mb-2 relative z-10">品牌账号起号方案</h3>
+<p class="text-label-md font-label-md text-on-surface-variant line-clamp-2 relative z-10 mt-auto">从0到1构建品牌矩阵，包含内容规划与增长策略。</p>
+</a>
+<!-- Case Card 2 -->
+<a class="group relative rounded-2xl bg-surface-container-lowest p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-outline-variant/20 hover:border-primary/30 flex flex-col h-full min-h-[200px]" href="#">
+<div class="absolute inset-0 bg-gradient-to-br from-surface/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<h3 class="text-body-lg font-headline-md text-on-surface mb-2 relative z-10">产品种草活动</h3>
+<p class="text-label-md font-label-md text-on-surface-variant line-clamp-2 relative z-10 mt-auto">精准触达目标圈层，小红书/抖音双端高潜爆款打造。</p>
+</a>
+<!-- Case Card 3 -->
+<a class="group relative rounded-2xl bg-surface-container-lowest p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-outline-variant/20 hover:border-primary/30 flex flex-col h-full min-h-[200px]" href="#">
+<div class="absolute inset-0 bg-gradient-to-br from-surface/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface text-[20px]" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+<h3 class="text-body-lg font-headline-md text-on-surface mb-2 relative z-10">新品上市</h3>
+<p class="text-label-md font-label-md text-on-surface-variant line-clamp-2 relative z-10 mt-auto">全生命周期造势营销，引爆首发日销量峰值。</p>
+</a>
+<!-- Case Card 4 -->
+<a class="group relative rounded-2xl bg-surface-container-lowest p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-outline-variant/20 hover:border-primary/30 flex flex-col h-full min-h-[200px]" href="#">
+<div class="absolute inset-0 bg-gradient-to-br from-surface/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface text-[20px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<h3 class="text-body-lg font-headline-md text-on-surface mb-2 relative z-10">门店推广方案</h3>
+<p class="text-label-md font-label-md text-on-surface-variant line-clamp-2 relative z-10 mt-auto">LBS精准定向引流，打通线上线下的转化闭环。</p>
+</a>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>
