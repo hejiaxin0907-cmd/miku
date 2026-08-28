@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fbfbfa" />
+    <title>Orbita GPT — Agent workspace copy</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --canvas: #fbfbfa;
+        --surface: #ffffff;
+        --surface-soft: #f6f7f7;
+        --ink: #111a20;
+        --ink-soft: #556069;
+        --muted: #9ca3a6;
+        --line: #e7e9e8;
+        --navy: #131f3d;
+        --navy-soft: #243252;
+        --blue: #6c8cf4;
+        --shadow: 0 12px 34px rgba(22, 34, 53, 0.07);
+        --radius-lg: 18px;
+        --radius-md: 14px;
+        --ease: cubic-bezier(.22, 1, .36, 1);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { min-height: 100%; }
+
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button, textarea { font: inherit; }
+      button { border: 0; cursor: pointer; }
+      button:focus-visible, textarea:focus-visible { outline: 3px solid rgba(108, 140, 244, .32); outline-offset: 3px; }
+      .icon-slot { display: inline-grid; place-items: center; flex: 0 0 auto; overflow: visible; }
+      .icon-slot > svg, .icon-slot > img { display: block; width: 100%; height: 100%; overflow: visible; }
+      .icon-slot > svg { transform-origin: center; }
+
+      .app-shell { min-height: 100dvh; display: flex; overflow: hidden; }
+
+      .sidebar {
+        width: 224px;
+        flex: 0 0 224px;
+        min-height: 100dvh;
+        padding: 28px 20px 22px;
+        border-right: 1px solid var(--line);
+        background: rgba(255, 255, 255, .82);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-row { display: flex; align-items: center; gap: 13px; padding: 0 4px; font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
+
+      .brand-orb, .hero-orb {
+        position: relative;
+        border-radius: 50%;
+        background: radial-gradient(circle at 34% 28%, #f4f7ff 0 13%, #a8bbff 18%, #718ef7 38%, #4b68ed 62%, #8e64ef 100%);
+        box-shadow: inset 5px 6px 10px rgba(255,255,255,.46), inset -8px -9px 15px rgba(22, 34, 53, .12), 0 9px 20px rgba(22, 34, 53, .10);
+      }
+      .brand-orb { width: 32px; height: 28px; border-radius: 0; background: url("./assets/miku-orb-brand.png") center / contain no-repeat; box-shadow: none; }
+      .brand-orb::after { display: none; }
+      .brand-orb::after, .hero-orb::after { content: ""; position: absolute; inset: 18% 22% 34% 28%; border-radius: 50%; background: rgba(255,255,255,.54); filter: blur(1px); }
+
+      .side-section { margin-top: 30px; }
+      .section-label { color: var(--muted); font-size: 12px; font-weight: 600; line-height: 14.4px; margin: 0 4px 10px; letter-spacing: .01em; }
+      .side-list { display: grid; gap: 3px; }
+      .side-item {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px 8px;
+        background: transparent;
+        color: #28323a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 18px;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 17.5px;
+        transition: background .2s ease, color .2s ease;
+      }
+      .side-item:hover, .side-item.active { background: #f2f4f5; color: var(--ink); }
+      .side-item svg { color: #8e979b; flex: 0 0 auto; }
+      .side-item.active svg { color: var(--navy); }
+      .side-item .icon-slot svg { --side-icon-accent: currentColor; }
+      .top-nav-list .side-item .icon-accent { opacity: 1; transition: fill .18s ease, stroke .18s ease; }
+      .top-nav-list .side-item:hover .icon-slot svg { --side-icon-accent: var(--blue); color: var(--blue); }
+      .top-nav-list .side-item.active .icon-slot svg { --side-icon-accent: currentColor; }
+      .top-nav-list .side-item:hover { background: rgba(108, 140, 244, .10); color: var(--blue); }
+      .top-nav-list .side-item.active { color: var(--blue); background: rgba(108, 140, 244, .10); }
+      .top-nav-list .side-item.active svg { color: var(--blue); }
+      .top-nav-list .side-item { color: #59666a; min-height: 42px; gap: 10px; font-size: 14px; font-weight: 500; line-height: 17.5px; }
+      .top-nav-list .icon-slot,
+      .project-icon,
+      .recent-item .icon-slot { width: 14px; height: 14px; }
+
+      .project-item { color: #59666a; font-size: 14px; font-weight: 500; line-height: 17.5px; }
+      .project-item:hover { color: var(--ink); }
+      .project-icon { width: 14px; height: 14px; flex: 0 0 auto; background: transparent; color: #7d888b; display: inline-grid; place-items: center; }
+      .recent-section { margin-top: 22px; }
+      .recent-item { color: #59666a; font-size: 14px; font-weight: 500; line-height: 17.5px; }
+      .recent-item .icon-slot { width: 14px; height: 14px; }
+      .recent-item svg { color: #9ba5a8; }
+      .side-item > span:last-child { white-space: nowrap; }
+
+      .sidebar-bottom { margin-top: auto; display: grid; gap: 14px; }
+      .upgrade {
+        padding: 12px 13px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--ink-soft);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.2;
+        transition: border-color .2s ease, box-shadow .2s ease;
+      }
+      .upgrade:hover { border-color: #ccd2d4; box-shadow: var(--shadow); }
+      .upgrade .icon-slot { width: 14px; height: 14px; }
+      .profile { display: flex; align-items: center; gap: 10px; padding: 0 4px; color: var(--ink-soft); font-size: 12px; font-weight: 500; line-height: 1.2; }
+      .profile-mark { width: 26px; height: 26px; border-radius: 9px; background: #eef1ff; color: #536fd6; display: grid; place-items: center; font-weight: 700; }
+
+      .workspace { flex: 1; min-width: 0; min-height: 100dvh; padding: 24px clamp(24px, 4vw, 64px) 30px; display: flex; flex-direction: column; }
+      .topbar { min-height: 46px; display: flex; align-items: flex-start; justify-content: flex-start; }
+      .template-search { position: relative; width: min(320px, 100%); max-width: 320px; }
+      .template-search-input { display: block; width: 100%; height: 40px; padding: 0 16px 0 42px; border: 2px solid transparent; border-radius: 12px; outline: none; background: #f3f3f4; color: var(--ink); font: inherit; font-size: 14px; line-height: 28px; transition: .3s ease; }
+      .template-search-input::placeholder { color: #9e9ea7; }
+      .template-search-input:focus, .template-search-input:hover { border-color: rgba(108, 140, 244, .42); background: #fff; box-shadow: 0 0 0 4px rgba(108, 140, 244, .10); }
+      .template-search-icon { position: absolute; left: 16px; top: 50%; width: 16px; height: 16px; color: #9e9ea7; pointer-events: none; transform: translateY(-50%); }
+      .template-search:focus-within .template-search-icon { color: var(--blue); }
+      .hero { text-align: center; padding-top: clamp(24px, 3.5vh, 42px); }
+      .hero-orb { width: 68px; height: 58px; margin: 0 auto 19px; border-radius: 0; background: url("./assets/hero-orb-clean.png") center / contain no-repeat; box-shadow: none; }
+      .hero-orb::after { display: none; }
+      .hero h1 { margin: 0; color: var(--ink); font-size: 32px; line-height: 1.03; letter-spacing: -.055em; font-weight: 720; }
+      .hero h1 span { display: inline-block; font-size: .84em; transform: translateY(-1px); }
+      .hero p { margin: 13px auto 0; color: var(--muted); font-size: 14px; line-height: 1.5; letter-spacing: -.01em; }
+
+      .skill-strip { width: min(100%, 860px); margin: 24px auto 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 68px; gap: 10px; }
+      .skill-card { min-width: 0; min-height: 52px; padding: 6px 10px; border: 1px solid rgba(211, 216, 216, .78); border-radius: 17px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); display: flex; align-items: center; gap: 10px; text-align: left; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
+      .skill-card:hover, .skill-card:focus-visible { border-color: rgba(211, 216, 216, .78); background: #fff; color: var(--blue); box-shadow: 0 6px 14px rgba(22, 34, 53, .08); transform: translateY(-1px); }
+      .skill-card:active { transform: translateY(0); }
+      .skill-card-thumb { width: 52px; height: 36px; flex: 0 0 52px; overflow: hidden; border-radius: 10px; object-fit: cover; background: #eef1ef; }
+      .skill-card-label { min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+      .skill-more { min-width: 0; min-height: 52px; padding: 6px 8px; border: 1px solid rgba(211, 216, 216, .78); border-radius: 17px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); font-size: 14px; font-weight: 600; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
+      .skill-more:hover, .skill-more:focus-visible { border-color: rgba(211, 216, 216, .78); background: #fff; color: var(--ink); box-shadow: 0 6px 14px rgba(22, 34, 53, .08); transform: translateY(-1px); }
+      .skill-more:active { transform: translateY(0); }
+
+      .miku-composer-section { --miku-row-height: 32px; position: relative; width: min(100%, 860px); margin: clamp(32px, 4vh, 44px) auto 0; padding: 0 3px 3px; overflow: visible; border: 0; border-radius: 0; background: transparent; background-image: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .miku-composer-section::before { content: ""; position: absolute; left: 3px; right: 3px; top: calc(100% - var(--miku-row-height) - 28px); bottom: 0; z-index: 0; border-radius: 0 0 28px 28px; background: rgba(65, 105, 225, .26); pointer-events: none; }
+      .miku-composer-surface { display: none; }
+      .miku-composer-surface path { fill: #fff; stroke: none; }
+      .miku-composer-outline { display: none; }
+      .miku-mode-tabs { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: center; gap: 12px; width: auto; height: var(--miku-row-height); margin: 0; background: transparent; }
+      .miku-mode-tabs::before { content: none; }
+      .miku-tab-indicator { display: none; }
+      .miku-mode-tabs:not(.is-ready) .miku-tab-indicator { transition: none; }
+      .miku-mode-tab { position: relative; z-index: 1; min-height: 28px; padding: 2px 12px 2px 8px; border: 0; border-radius: 14px 14px 0 0; background: transparent; color: #6d797c; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; font-weight: 600; line-height: 16.8px; box-shadow: none; transition: color .2s ease, transform .2s var(--ease); }
+      .miku-mode-tab:focus { outline: none; }
+      .miku-mode-icon { width: 14px; height: 14px; flex: 0 0 auto; color: currentColor; }
+      .miku-mode-tab:hover { color: var(--ink); transform: none; background: transparent; }
+      .miku-mode-tab.is-active { z-index: 1; background: transparent; color: var(--blue); font-weight: 600; box-shadow: none; }
+      .miku-mode-tab.is-active::before, .miku-mode-tab.is-active::after { content: none; }
+      .miku-question-box { position: relative; z-index: 2; min-height: 132px; padding: 16px 20px; border: 1.6px solid rgba(210, 219, 233, .96); border-radius: 28px; background: var(--surface); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .miku-composer-tab { position: absolute; top: 16px; left: 20px; z-index: 1; display: inline-flex; align-items: center; height: 25px; padding: 0 9px; border: 1px solid rgba(125, 132, 139, .42); border-radius: 9px; color: #7b8388; font-size: 14px; line-height: 1; }
+      .miku-question-input { display: block; width: 100%; min-height: 96px; padding: 2px 0 0 64px; resize: none; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 16px; line-height: 1.5; }
+      .miku-question-input:focus-visible { outline: 0; }
+      .miku-question-input::placeholder { color: #929c9d; opacity: 1; font-size: 14px; }
+      .miku-composer-actions { position: relative; z-index: 3; display: flex; align-items: center; justify-content: flex-start; gap: 14px; height: var(--miku-row-height); margin: 0; background: transparent; }
+      .miku-composer-actions::before { content: none; }
+      .miku-composer-actions-left { position: relative; z-index: 1; min-width: 0; display: flex; align-items: center; gap: 0; padding: 0 0 0 8px; overflow-x: auto; border: 0; border-radius: 0; background: transparent; box-shadow: none; scrollbar-width: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .miku-composer-actions-left::-webkit-scrollbar { display: none; }
+      .miku-action-button { min-height: 26px; padding: 4px 8px; border: 0; border-radius: 0; background: transparent; color: #667176; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 12px; font-weight: 500; line-height: 14.4px; box-shadow: none; transition: color .2s ease, transform .2s var(--ease); }
+      .miku-action-button:hover { background: transparent; color: var(--ink); transform: none; }
+      .miku-model-button { color: #667176; }
+      .miku-action-divider { display: block; width: 1px; height: 20px; flex: 0 0 auto; background: rgba(105, 118, 119, .28); }
+      #modelButton > .icon-slot:first-child,
+      #settingsButton > .icon-slot:first-child,
+      #uploadButton > .icon-slot:first-child { width: 16px; height: 16px; }
+      #modelButton > .icon-slot:last-child { width: 14px; height: 14px; }
+      .miku-send-button { position: absolute; right: 14px; bottom: 12px; z-index: 2; flex: 0 0 auto; width: 42px; min-width: 42px; height: 34px; padding: 0; border: 0; border-radius: 999px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 7px 16px rgba(19, 31, 61, .18), inset 0 1px 0 rgba(255, 255, 255, .14); transition: transform .2s var(--ease), box-shadow .2s ease, filter .2s ease; }
+      .miku-send-button .icon-slot { width: 14px; height: 14px; }
+      .miku-send-button:hover { filter: brightness(1.06); box-shadow: 0 10px 22px rgba(19, 31, 61, .24), inset 0 1px 0 rgba(255, 255, 255, .18); transform: translateY(-2px); }
+
+      .template-library { width: 100%; margin: auto auto 0; }
+      .template-library-header { display: flex; align-items: center; gap: 24px; margin-bottom: 14px; }
+      .template-tabs { min-width: 0; display: flex; align-items: center; gap: 25px; overflow: hidden; }
+      .template-tab, .template-more { padding: 0; border: 0; background: transparent; color: var(--ink-soft); white-space: nowrap; font-size: 14px; transition: color .2s ease, transform .2s var(--ease); }
+      .template-tab:hover, .template-more:hover { color: var(--ink); transform: translateY(-1px); }
+      .template-tab.is-active { color: var(--ink); font-size: 17px; font-weight: 720; }
+      .template-more { margin-left: auto; color: #7c878a; }
+      .template-more span { display: inline-block; margin-left: 3px; font-size: 19px; line-height: 0; transform: translateY(2px); }
+      .template-grid { display: flex; gap: 14px; overflow-x: auto; padding: 0 2px 6px; scrollbar-width: none; scroll-behavior: smooth; }
+      .template-grid::-webkit-scrollbar { display: none; }
+      .template-card { flex: 0 0 clamp(180px, 15vw, 232px); min-width: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 17px; background: #f5f7f5; color: var(--ink); text-align: left; transition: transform .2s var(--ease), border-color .2s ease, box-shadow .2s ease; }
+      .template-card:hover { border-color: #ccd3d0; box-shadow: var(--shadow); transform: translateY(-2px); }
+      .template-card-media { display: block; aspect-ratio: 1.28; padding: 9px; background: #eef1ef; }
+      .template-card-media img { display: block; width: 100%; height: 100%; border-radius: 11px; object-fit: cover; }
+      .template-card-title { display: block; overflow: hidden; padding: 10px 12px 12px; font-size: 12px; font-weight: 620; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+
+      @media (min-width: 1500px) {
+        .template-grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); overflow: visible; }
+        .template-card { flex-basis: auto; }
+      }
+
+      .toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; background: rgba(17, 26, 32, .94); color: #fff; box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .24s ease, transform .24s var(--ease); }
+      .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+      @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      @media (max-width: 900px) {
+        .sidebar { width: 184px; flex-basis: 184px; padding-left: 14px; padding-right: 14px; }
+        .workspace { padding-left: 24px; padding-right: 24px; }
+        .miku-composer-section { width: min(calc(100% - 48px), 860px); }
+      }
+
+      @media (min-width: 701px) and (max-height: 780px) {
+        .workspace { padding-top: 18px; padding-bottom: 16px; }
+        .topbar { min-height: 40px; }
+        .hero { padding-top: 26px; }
+        .hero-orb { width: 54px; height: 46px; margin-bottom: 12px; }
+        .hero h1 { font-size: 32px; }
+        .hero p { margin-top: 8px; font-size: 12px; }
+        .miku-composer-section { --miku-row-height: 36px; margin-top: 58px; }
+        .miku-mode-tabs { gap: 10px; min-height: 36px; }
+        .miku-mode-tab { min-height: 30px; padding: 3px 12px 3px 8px; gap: 7px; font-size: 14px; }
+        .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 15px; height: 15px; }
+        .miku-question-box { min-height: 120px; padding-top: 15px; padding-bottom: 15px; }
+        .miku-question-input { min-height: 90px; }
+        .template-library-header { gap: 18px; margin-bottom: 10px; }
+        .template-tabs { gap: 17px; }
+        .template-tab, .template-more { font-size: 12px; }
+        .template-tab.is-active { font-size: 15px; }
+        .template-grid { gap: 10px; }
+        .template-card-media { padding: 7px; }
+        .template-card-title { padding: 8px 9px 10px; font-size: 11px; }
+      }
+
+      @media (max-width: 700px) {
+        .app-shell { display: block; overflow: visible; }
+        .sidebar { width: 100%; min-height: auto; padding: 15px 16px; border-right: 0; border-bottom: 1px solid var(--line); flex-direction: row; align-items: center; gap: 12px; }
+        .brand-row { flex: 0 0 auto; }
+        .side-section, .sidebar-bottom { display: none; }
+        .workspace { min-height: calc(100dvh - 67px); padding: 18px 16px 24px; }
+        .topbar { min-height: 40px; }
+        .hero { padding-top: 48px; }
+        .miku-composer-section { --miku-row-height: 40px; width: 100%; margin-top: 32px; }
+        .miku-mode-tabs { min-height: 36px; gap: 10px; }
+        .miku-mode-tab { min-width: 0; flex: 1 1 0; padding: 5px 8px; gap: 6px; font-size: 14px; line-height: 1.15; white-space: normal; }
+        .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 16px; height: 16px; }
+        .miku-question-box { min-height: 150px; padding: 17px; }
+        .miku-question-input { min-height: 108px; font-size: 14px; }
+        .miku-composer-actions { gap: 8px; }
+        .miku-composer-actions-left { padding-left: 4px; padding-right: 4px; }
+        .miku-action-button { padding-left: 9px; padding-right: 9px; }
+        .miku-send-button { width: 40px; min-width: 40px; height: 32px; }
+        .skill-strip { width: 100%; margin-top: 24px; grid-template-columns: repeat(4, minmax(200px, 72vw)) 76px; overflow-x: auto; padding: 0 2px 6px; scrollbar-width: none; }
+        .skill-strip::-webkit-scrollbar { display: none; }
+        .template-library { margin-top: 42px; }
+        .template-library-header { overflow-x: auto; gap: 14px; }
+        .template-tabs { gap: 16px; }
+        .template-grid { gap: 10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Workspace navigation">
+        <div class="brand-row"><span class="brand-orb" aria-hidden="true"></span><span>Miku</span></div>
+        <section class="side-section">
+          <p class="section-label">工作台</p>
+          <div class="side-list top-nav-list">
+            <button class="side-item active" type="button" data-name="首页"><span class="icon-slot">{{HOME}}</span><span>首页</span></button>
+            <button class="side-item" type="button" data-name="模板"><span class="icon-slot">{{LAYERS}}</span><span>模板</span></button>
+            <button class="side-item" type="button" data-name="工具"><span class="icon-slot">{{TOOLS}}</span><span>工具</span></button>
+            <button class="side-item" type="button" data-name="任务"><span class="icon-slot">{{TASK}}</span><span>任务</span></button>
+            <button class="side-item" type="button" data-name="我的"><span class="icon-slot">{{USER}}</span><span>我的</span></button>
+          </div>
+        </section>
+
+        <section class="side-section projects">
+          <p class="section-label">项目</p>
+          <div class="side-list">
+            <button class="side-item project-item" type="button" data-name="本周新品种草计划"><span class="project-icon icon-slot">{{FOLDER}}</span><span>本周新品种草计划</span></button>
+            <button class="side-item project-item" type="button" data-name="品牌 IP 起号方案"><span class="project-icon icon-slot">{{FOLDER}}</span><span>品牌 IP 起号方案</span></button>
+          </div>
+        </section>
+
+        <section class="side-section recent-section">
+          <p class="section-label">最近</p>
+          <div class="side-list">
+            <button class="side-item recent-item" type="button" data-name="AI 对话类交互动效设计"><span class="icon-slot">{{CHAT}}</span><span>AI 对话类交互动效设计</span></button>
+            <button class="side-item recent-item" type="button" data-name="配色方案讨论"><span class="icon-slot">{{CHAT}}</span><span>配色方案讨论</span></button>
+          </div>
+        </section>
+
+        <div class="sidebar-bottom">
+          <button class="upgrade" type="button" id="upgradeButton"><span class="icon-slot">{{SPARK}}</span><span>Upgrade to Pro</span></button>
+          <div class="profile"><span class="profile-mark">S</span><span>Signed in</span></div>
+        </div>
+      </aside>
+
+      <main class="workspace" id="workspace">
+        <header class="topbar" aria-label="顶部工作区">
+          <label class="template-search" aria-label="搜索模板">
+            <span class="template-search-icon icon-slot" aria-hidden="true">{{SEARCH}}</span>
+            <input class="template-search-input" type="search" placeholder="输入关键词搜索模板" aria-label="输入关键词搜索模板" />
+          </label>
+        </header>
+
+        <section class="hero" aria-labelledby="greeting">
+          <div class="hero-orb" aria-hidden="true"></div>
+          <h1 id="greeting">今天你想做些什么？</h1>
+        </section>
+
+        <section class="skill-strip" aria-label="常用技能">
+          <button class="skill-card" type="button" data-skill="品牌视觉全案" data-prompt="请帮我制定一套品牌视觉全案">
+            <img class="skill-card-thumb" src="./assets/template-library/promotion-poster.png" alt="" />
+            <span class="skill-card-label">品牌视觉全案</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="IP 设计全案" data-prompt="请帮我完成一套 IP 设计全案">
+            <img class="skill-card-thumb" src="./assets/template-library/conversation-poster.png" alt="" />
+            <span class="skill-card-label">IP 设计全案</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="TikTok 带货短视频" data-prompt="请帮我策划一支 TikTok 带货短视频">
+            <img class="skill-card-thumb" src="./assets/template-library/knowledge-poster.png" alt="" />
+            <span class="skill-card-label">TikTok 带货短视频</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="APP 界面设计" data-prompt="请帮我设计一套 APP 界面">
+            <img class="skill-card-thumb" src="./assets/template-library/calendar-poster.png" alt="" />
+            <span class="skill-card-label">APP 界面设计</span>
+          </button>
+          <button class="skill-more" type="button" id="moreSkillsButton" aria-label="查看更多技能">更多</button>
+        </section>
+
+        <section class="miku-composer-section" aria-label="Miku style glass input">
+          <svg class="miku-composer-surface" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+            <path></path>
+          </svg>
+          <svg class="miku-composer-outline" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="miku-outline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6d8eeb" stop-opacity=".88"></stop>
+                <stop offset="48%" stop-color="#587ce2" stop-opacity=".8"></stop>
+                <stop offset="100%" stop-color="#4169e1" stop-opacity=".92"></stop>
+              </linearGradient>
+            </defs>
+            <path></path>
+          </svg>
+          <div class="miku-mode-tabs" role="tablist" aria-label="对话类型">
+            <span class="miku-tab-indicator" aria-hidden="true"></span>
+            <button class="miku-mode-tab is-active" type="button" role="tab" aria-selected="true"><span class="icon-slot miku-mode-icon">{{PLAN}}</span><span>方案策划</span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{IMAGE}}</span><span>图片生成</span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{VIDEO}}</span><span>视频生成</span></button>
+          </div>
+          <div class="miku-question-box">
+            <span class="miku-composer-tab" aria-hidden="true">Tab</span>
+            <textarea class="miku-question-input" rows="3" placeholder="例：帮我制定一个新产品的上市营销方案" aria-label="Miku glass input"></textarea>
+            <button class="miku-send-button" type="button" id="sendButton" aria-label="发送"><span class="icon-slot">{{SEND}}</span></button>
+          </div>
+          <div class="miku-composer-actions" aria-label="输入框操作">
+            <div class="miku-composer-actions-left">
+              <button class="miku-action-button" type="button" id="uploadButton"><span class="icon-slot">{{PAPERCLIP}}</span><span>上传文件</span></button>
+              <span class="miku-action-divider" aria-hidden="true"></span>
+              <button class="miku-action-button" type="button" id="settingsButton"><span class="icon-slot">{{SETTINGS}}</span><span>设置</span></button>
+              <span class="miku-action-divider" aria-hidden="true"></span>
+              <button class="miku-action-button miku-model-button" type="button" id="modelButton"><span class="icon-slot">{{MODEL}}</span><span>模型选择</span><span class="icon-slot">{{CHEVRON}}</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="template-library" aria-labelledby="template-library-title">
+          <div class="template-library-header">
+            <div class="template-tabs" role="tablist" aria-label="模板分类">
+              <button class="template-tab is-active" type="button" role="tab" aria-selected="true" id="template-library-title">灵感库</button>
+              <button class="template-tab" type="button" role="tab" aria-selected="false">小红书种草笔记</button>
+              <button class="template-tab" type="button" role="tab" aria-selected="false">公众号图文</button>
+              <button class="template-tab" type="button" role="tab" aria-selected="false">探店攻略</button>
+              <button class="template-tab" type="button" role="tab" aria-selected="false">爆款封面</button>
+            </div>
+            <button class="template-more" type="button" id="templateMore">查看更多 <span aria-hidden="true">›</span></button>
+          </div>
+          <div class="template-grid">
+            <button class="template-card" type="button" data-template="创意招聘招募海报">
+              <span class="template-card-media"><img src="./assets/template-library/recruitment-poster.png" alt="创意招聘招募海报模板" /></span>
+              <span class="template-card-title">卡通拼贴风创意招聘招募海报</span>
+            </button>
+            <button class="template-card" type="button" data-template="职场对话小红书封面">
+              <span class="template-card-media"><img src="./assets/template-library/conversation-poster.png" alt="职场对话小红书封面模板" /></span>
+              <span class="template-card-title">职场对话小红书封面</span>
+            </button>
+            <button class="template-card" type="button" data-template="知识攻略内容封面">
+              <span class="template-card-media"><img src="./assets/template-library/knowledge-poster.png" alt="知识攻略内容封面模板" /></span>
+              <span class="template-card-title">知识攻略内容封面</span>
+            </button>
+            <button class="template-card" type="button" data-template="红色促销活动海报">
+              <span class="template-card-media"><img src="./assets/template-library/promotion-poster.png" alt="红色促销活动海报模板" /></span>
+              <span class="template-card-title">红色促销活动主题海报</span>
+            </button>
+            <button class="template-card" type="button" data-template="内容日历排期模板">
+              <span class="template-card-media"><img src="./assets/template-library/calendar-poster.png" alt="内容日历排期模板" /></span>
+              <span class="template-card-title">内容日历排期模板</span>
+            </button>
+            <button class="template-card" type="button" data-template="新品上市视觉模板">
+              <span class="template-card-media"><img src="./assets/template-library/launch-poster.png" alt="新品上市视觉模板" /></span>
+              <span class="template-card-title">新品上市视觉模板</span>
+            </button>
+            <button class="template-card" type="button" data-template="生活方式分享封面">
+              <span class="template-card-media"><img src="./assets/template-library/wellness-poster.png" alt="生活方式分享封面模板" /></span>
+              <span class="template-card-title">生活方式分享封面</span>
+            </button>
+            <button class="template-card" type="button" data-template="探店攻略图文模板">
+              <span class="template-card-media"><img src="./assets/template-library/cafe-poster.png" alt="探店攻略图文模板" /></span>
+              <span class="template-card-title">探店攻略图文模板</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const icons = {
+        SEARCH: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>',
+        CHAT: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10a9.95 9.95 0 0 1-5.168-1.438l-3.032.892A1.01 1.01 0 0 1 2.546 20.2l.892-3.032A9.958 9.958 0 0 1 2 12C2 6.477 6.477 2 12 2m0 2a8 8 0 0 0-6.759 12.282c.227.357.305.807.177 1.24l-.441 1.501 1.501-.441c.433-.128.883-.05 1.24.177A8 8 0 1 0 12 4m-3.5 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3m7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3'/></g></svg>",
+        HOME: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M10.8 2.65a2 2 0 0 1 2.4 0l7 5.25a2 2 0 0 1 .8 1.6V19a2 2 0 0 1-2 2h-4.9a1.1 1.1 0 0 1-1.1-1.1V14a1 1 0 1 0-2 0v5.9A1.1 1.1 0 0 1 9.9 21H5a2 2 0 0 1-2-2V9.5a2 2 0 0 1 .8-1.6zm1.2 1.6L5 9.5V19h4v-5a3 3 0 1 1 6 0v5h4V9.5z'/></g></svg>",
+        LAYERS: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M15.586 2.757a2 2 0 0 1 2.828 0l2.829 2.829a2 2 0 0 1 0 2.828l-2.829 2.829a2 2 0 0 1-2.828 0l-2.829-2.829a2 2 0 0 1 0-2.828zM17 4.172 14.172 7 17 9.828 19.828 7zM9 3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 2H5v4h4zm12 10a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2zm-2 0v4h-4v-4zM9 13a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zm0 2H5v4h4z'/></g></svg>",
+        TOOLS: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><title>pencil_ruler_line</title><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='m19.571 3.722.707.707a3 3 0 0 1 0 4.242l-2.975 2.975 3.182 3.182a2 2 0 0 1 0 2.829l-2.828 2.828a2 2 0 0 1-2.829 0l-3.182-3.182-2.363 2.364a1.5 1.5 0 0 1-.86.426l-3.92.53a1.001 1.001 0 0 1-1.126-1.127l.53-3.919a1.5 1.5 0 0 1 .426-.86l2.364-2.363-3.182-3.182a2 2 0 0 1 0-2.829l2.828-2.828a2 2 0 0 1 2.829 0l3.182 3.182 2.974-2.975a3 3 0 0 1 4.243 0m-3.682 9.339-2.828 2.828.353.354.707-.707a1 1 0 0 1 1.498 1.32l-.083.094-.707.707 1.414 1.414 2.828-2.828zm-1.268-5.804-8.755 8.755-.331 2.453 2.453-.332 8.755-8.754zM7.757 4.93 4.93 7.757l1.414 1.415.707-.707a1 1 0 0 1 1.498 1.32l-.084.094-.707.707.354.353 2.828-2.828zm8.986.207-.707.707 2.12 2.121.708-.707a1 1 0 0 0 0-1.414l-.707-.707a1 1 0 0 0-1.414 0'/></g></svg>",
+        TASK: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><title>briefcase_line</title><g fill='none'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M14 3a3 3 0 0 1 3 3h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3a3 3 0 0 1 3-3zm-3 9H4v7h16v-7h-7v1a1 1 0 0 1-1.993.117L11 13zm9-4H4v2h16zm-6-3h-4a1 1 0 0 0-.993.883L9 6h6a1 1 0 0 0-.883-.993z'/></g></svg>",
+        USER: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M12 4a7 7 0 0 0-7 7v8.62a.4.4 0 0 0 .594.35l.943-.523a4 4 0 0 1 3.927.023l.544.311a2 2 0 0 0 1.984 0l.544-.31a4 4 0 0 1 3.927-.024l.943.523a.4.4 0 0 0 .594-.35V11a7 7 0 0 0-7-7m-9 7a9 9 0 0 1 18 0v8.62c0 1.83-1.966 2.987-3.565 2.099l-.943-.524a2 2 0 0 0-1.964.012l-.543.31a4 4 0 0 1-3.97 0l-.543-.31a2 2 0 0 0-1.964-.012l-.942.524C4.966 22.607 3 21.45 3 19.62zm7.5-.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M15 12a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3'/></g></svg>",
+        FOLDER: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M9.52 3a2 2 0 0 1 1.442.614l.12.137L12.48 5.5H19a2 2 0 0 1 1.995 1.85L21 7.5v1.53a2.001 2.001 0 0 1 1.61 2.398l-.038.147-2.4 8a2 2 0 0 1-1.752 1.418l-.164.007H4a2 2 0 0 1-1.995-1.85L2 19V5a2 2 0 0 1 1.85-1.995L4 3zm11.136 8H6.744l-2.4 8h13.912zM9.519 5H4v8.187l.828-2.762A2 2 0 0 1 6.744 9H19V7.5h-6.52a2 2 0 0 1-1.561-.75z'/></g></svg>",
+        SPARK: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M12 2c1.091 0 2.117.292 3 .804a1 1 0 1 1-1 1.73A4 4 0 0 0 8 8l11 .001a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1a6 6 0 0 1 6-6m7 8H5v10h14zm-7 2a2 2 0 0 1 1.134 3.647l-.134.085V17a1 1 0 0 1-1.993.117L11 17v-1.268A2 2 0 0 1 12 12m7.918-6.979.966.26a1 1 0 0 1-.518 1.93l-.965-.258a1 1 0 0 1 .517-1.932M18.633 2.09a1 1 0 0 1 .707 1.225l-.129.482a1 1 0 1 1-1.932-.517l.13-.483a1 1 0 0 1 1.224-.707'/></g></svg>",
+        MODEL: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M12 3a4 4 0 0 1 3.153 6.461l2.085 3.612A4 4 0 1 1 14.535 19h-5.07a4 4 0 1 1-2.703-5.927L8.847 9.46A4 4 0 0 1 12 3M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4m12 0a2 2 0 1 0 .001 4A2 2 0 0 0 18 15m-4.448-4.312A3.989 3.989 0 0 1 12 11c-.55 0-1.074-.111-1.552-.312l-1.876 3.249A3.991 3.991 0 0 1 10 17h4c0-1.23.556-2.33 1.428-3.063zM12 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4'/></g></svg>",
+        PLAN: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M9 3a4 4 0 0 0-4 4v1.126a4.002 4.002 0 0 0 0 7.748V17a4 4 0 0 0 7 2.646A4 4 0 0 0 19 17v-1.126a4.002 4.002 0 0 0 0-7.748V7a4 4 0 0 0-7-2.646A3.99 3.99 0 0 0 9 3m8 6V7a2 2 0 1 0-4 0v4.535A3.982 3.982 0 0 1 15 11a1 1 0 1 1 0 2 2 2 0 0 0-2 2v2a2 2 0 1 0 4 0v-1.126a3.947 3.947 0 0 1-.333-.102 1 1 0 1 1 .666-1.886A2 2 0 1 0 18 10a1 1 0 0 1-1-1m-8 4a2 2 0 0 1 2 2v2a2 2 0 1 1-4 0v-1.126c.113-.03.224-.063.333-.102a1 1 0 1 0-.666-1.886A2 2 0 1 1 6 10a1 1 0 0 0 1-1V7a2 2 0 1 1 4 0v4.535A3.982 3.982 0 0 0 9 11a1 1 0 1 0 0 2'/></g></svg>",
+        IMAGE: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M20 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a1 1 0 1 1 2 0v2.1l4.995-4.994a1.25 1.25 0 0 1 1.768 0l4.065 4.066 1.238-1.238a1.25 1.25 0 0 1 1.768 0L20 15.101V5h-8a1 1 0 1 1 0-2zM9.879 12.05 4 17.93V19h16v-1.071l-3.05-3.05-.707.707.207.207a1 1 0 0 1-1.414 1.414zM5 2a1 1 0 0 1 .898.56l.048.117.13.378a3 3 0 0 0 1.684 1.8l.185.07.378.129a1 1 0 0 1 .117 1.844l-.117.048-.378.13a3 3 0 0 0-1.8 1.684l-.07.185-.129.378a1 1 0 0 1-1.844.117l-.048-.117-.13-.378a3 3 0 0 0-1.684-1.8l-.185-.07-.378-.129a1 1 0 0 1-.117-1.844l.117-.048.378-.13a3 3 0 0 0 1.8-1.684l.07-.185.129-.378A1 1 0 0 1 5 2m10.5 5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3M5 5.196A5.004 5.004 0 0 1 4.196 6c.298.236.568.506.804.804.236-.298.506-.568.804-.804A5.004 5.004 0 0 1 5 5.196'/></g></svg>",
+        VIDEO: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><title>video_ai_line</title><g fill='none' fill-rule='nonzero'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036q-.016-.004-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427q-.004-.016-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092q.019.005.029-.008l.004-.014-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014-.034.614q.001.018.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M2 19V5a2 2 0 0 1 2-2h9a1 1 0 1 1 0 2H4v14h16v-7a1 1 0 1 1 2 0v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2M8.651 8.48a1.235 1.235 0 0 1 1.689-.842c.504.216 1.568.702 2.916 1.48a28 28 0 0 1 2.74 1.786c.661.495.665 1.483.001 1.98-.437.326-1.383 1-2.742 1.784a28 28 0 0 1-2.915 1.481 1.234 1.234 0 0 1-1.715-.99 29 29 0 0 1-.176-3.265c0-1.551.112-2.719.176-3.264zM20 1a1 1 0 0 1 .946.677l.13.378c.3.879.99 1.57 1.87 1.87l.377.129a1 1 0 0 1 0 1.892l-.378.13c-.879.3-1.57.99-1.87 1.87l-.129.377a1 1 0 0 1-1.892 0l-.13-.378a3 3 0 0 0-1.87-1.87l-.377-.129a1 1 0 0 1 0-1.892l.378-.13c.879-.3 1.57-.99 1.87-1.87l.129-.377.062-.146A1 1 0 0 1 20 1m0 3.196a5 5 0 0 1-.804.804q.449.355.804.803.356-.447.803-.803A5 5 0 0 1 20 4.196m-9.55 7.698c0 .772.03 1.44.066 1.97a29 29 0 0 0 3.414-1.97 29 29 0 0 0-3.414-1.972c-.037.53-.067 1.199-.067 1.972'/></g></svg>",
+        SETTINGS: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' fill-rule='evenodd'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036c-.01-.003-.019 0-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M16 15c1.306 0 2.418.835 2.83 2H20a1 1 0 1 1 0 2h-1.17a3.001 3.001 0 0 1-5.66 0H4a1 1 0 1 1 0-2h9.17A3.001 3.001 0 0 1 16 15m0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2M8 9a3 3 0 0 1 2.762 1.828l.067.172H20a1 1 0 0 1 .117 1.993L20 13h-9.17a3.001 3.001 0 0 1-5.592.172L5.17 13H4a1 1 0 0 1-.117-1.993L4 11h1.17A3.001 3.001 0 0 1 8 9m0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2m8-8c1.306 0 2.418.835 2.83 2H20a1 1 0 1 1 0 2h-1.17a3.001 3.001 0 0 1-5.66 0H4a1 1 0 0 1 0-2h9.17A3.001 3.001 0 0 1 16 3m0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2'/></g></svg>",
+        CHART: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19.5h18"/></svg>',
+        DOC: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3.8h7l4 4v12.4H7z"/><path d="M14 3.8v4h4M9.5 12h5M9.5 15.5h5"/></svg>',
+        QUESTION: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.2a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 1.8-2.4 3.4M12 16.8h.01"/></svg>',
+        CALENDAR: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M8 3.5v4M16 3.5v4M4 10h16"/></svg>',
+        CHECK: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="m8.3 12 2.3 2.3 5.2-5.1"/></svg>',
+        PLUG: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 7V3M15 7V3M7 7h10v3a5 5 0 0 1-10 0V7ZM12 15v6"/></svg>',
+        NOTE: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"/></svg>',
+        DATABASE: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="5.5" rx="6.5" ry="2.5"/><path d="M5.5 5.5v6.5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5V5.5M5.5 12v6.5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5V12"/></svg>',
+        CHEVRON: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m7 9 5 5 5-5"/></svg>',
+        PAPERCLIP: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><title>attachment_3_line</title><g fill='none' fill-rule='nonzero'><path d='M24 0v24H0V0zM12.594 23.258l-.012.002-.071.035-.02.004-.014-.004-.071-.036q-.016-.004-.024.006l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427q-.004-.016-.016-.018m.264-.113-.014.002-.184.093-.01.01-.003.011.018.43.005.012.008.008.201.092q.019.005.029-.008l.004-.014-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014-.034.614q.001.018.017.024l.015-.002.201-.093.01-.008.003-.011.018-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M5 15V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0V7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0'/></g></svg>",
+        VOICE: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 13v-2M10 16V8M14 18V6M18 14v-4"/></svg>',
+        SEND: "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none'><path d='M24 0v24H0V0zM12.593 23.258l-.011.002-.071.035-.02.004-.014-.004-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01-.017.428.005.02.01.013.104.074.015.004.012-.004.104-.074.012-.016.004-.017-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113-.013.002-.185.093-.01.01-.003.011.018.43.005.012.008.007.201.093c.012.004.023 0 .029-.008l.004-.014-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014-.034.614c0 .012.007.02.017.024l.015-.002.201-.093.01-.008.004-.011.017-.43-.003-.012-.01-.01z'/><path fill=\"currentColor\" d='M20.25 3.532a1 1 0 0 1 1.183 1.329l-6 15.5a1 1 0 0 1-1.624.362l-3.382-3.235-1.203 1.202c-.636.636-1.724.186-1.724-.714v-3.288L2.309 9.723a1 1 0 0 1 .442-1.691l17.5-4.5Zm-2.114 4.305-7.998 6.607 3.97 3.798zm-1.578-1.29L4.991 9.52l3.692 3.53 7.875-6.505Z'/></g></svg>",
+      };
+
+      document.querySelectorAll('.icon-slot').forEach((slot) => {
+        const token = slot.textContent.trim().replace(/[{}]/g, '');
+        if (icons[token]) slot.innerHTML = icons[token];
+      });
+      function normalizeIconVisualSize() {
+        document.querySelectorAll('.icon-slot > svg').forEach((svg) => {
+          const viewBox = svg.viewBox.baseVal;
+          const shapes = [
+            ...svg.querySelectorAll(
+              'path, circle, rect, line, polyline, polygon, ellipse'
+            )
+          ];
+
+          if (!shapes.length || !viewBox.width || !viewBox.height) return;
+
+          // 仅统计“实际可见”的图形：很多线性图标带一条 fill='none' 的 24x24
+          // 装饰背景路径（如 M24 0v24H0V0z），不可见但会被 getBBox() 计入，
+          // 导致所有图标都被测成 24x24。这里按 fill/stroke 是否可见过滤掉它。
+          const isVisible = (shape) => {
+            const cs = getComputedStyle(shape);
+            const fill = cs.fill;
+            const stroke = cs.stroke;
+            return (
+              (fill && fill !== 'none' && fill !== 'transparent') ||
+              (stroke && stroke !== 'none' && stroke !== 'transparent')
+            );
+          };
+
+          const boxes = shapes
+            .filter(isVisible)
+            .map((shape) => {
+              try {
+                return shape.getBBox();
+              } catch {
+                return null;
+              }
+            })
+            .filter(Boolean);
+
+          if (!boxes.length) return;
+
+          const minX = Math.min(...boxes.map((box) => box.x));
+          const minY = Math.min(...boxes.map((box) => box.y));
+          const maxX = Math.max(...boxes.map((box) => box.x + box.width));
+          const maxY = Math.max(...boxes.map((box) => box.y + box.height));
+
+          const visualWidth = maxX - minX;
+          const visualHeight = maxY - minY;
+          const visualSize = Math.max(visualWidth, visualHeight);
+
+          if (!visualSize) return;
+
+          // 让图形占 SVG viewBox 的约 92%，避免过大或过小（比 82% 更饱满）
+          const targetSize = Math.min(viewBox.width, viewBox.height) * 0.92;
+          const scale = Math.min(1.2, Math.max(0.86, targetSize / visualSize));
+
+          // 图形在图标槽内“居中”时，窄图标（如回形针）右侧会留白，
+          // 造成图标→文字的视觉间距不一致。这里把图形向右对齐到槽右缘，
+          // 使每个图标的图形右缘与后面文字之间只保留 CSS gap，间距统一。
+          const slot = svg.closest('.icon-slot');
+          const slotW = slot ? slot.offsetWidth : 16;
+          const renderW = slotW * (visualWidth / viewBox.width) * scale;
+          const tx = (slotW - renderW) / 2;
+
+          svg.style.transform = `translateX(${tx.toFixed(2)}px) scale(${scale})`;
+          svg.style.transformOrigin = 'center';
+        });
+      }
+
+      // 光学补偿：三个模式标签的图标“墨迹右缘→文字墨迹左缘”间距，
+      // 截图实测为 方案11 / 图片12 / 视频10（视频=CSS gap 10）。
+      // 统一到 10px：方案收紧 1px、图片收紧 2px、视频不动。
+      function applyOpticalCompensation() {
+        const compensations = [-1, -2, 0];
+        document.querySelectorAll('.miku-mode-tab').forEach((tab, i) => {
+          if (compensations[i] === undefined) return;
+          const slot = tab.querySelector(':scope > .icon-slot');
+          if (slot) slot.style.marginRight = compensations[i] + 'px';
+        });
+      }
+
+      function initIconLayout() {
+        normalizeIconVisualSize();
+        applyOpticalCompensation();
+      }
+
+      window.addEventListener('load', initIconLayout);
+      window.addEventListener('resize', initIconLayout);
+
+      const toast = document.querySelector('#toast');
+      let toastTimer;
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      document.querySelectorAll('.side-item[data-name]').forEach((item) => item.addEventListener('click', () => {
+        document.querySelectorAll('.side-item[data-name]').forEach((entry) => entry.classList.remove('active'));
+        item.classList.add('active');
+        showToast(`${item.dataset.name} selected`);
+      }));
+      document.querySelector('#modelButton').addEventListener('click', () => showToast('模型选择已打开'));
+      document.querySelector('#settingsButton').addEventListener('click', () => showToast('设置已打开'));
+      document.querySelector('#uploadButton').addEventListener('click', () => showToast('上传文件功能待接入'));
+      document.querySelector('#sendButton').addEventListener('click', () => showToast(document.querySelector('.miku-question-input').value.trim() ? '已发送' : '请先输入内容'));
+      const skillInput = document.querySelector('.miku-question-input');
+      document.querySelectorAll('.skill-card').forEach((card) => card.addEventListener('click', () => {
+        skillInput.value = card.dataset.prompt;
+        skillInput.dispatchEvent(new Event('input', { bubbles: true }));
+        skillInput.focus();
+        showToast(`${card.dataset.skill} 已加入输入框`);
+      }));
+      document.querySelector('#moreSkillsButton').addEventListener('click', () => showToast('更多技能即将开放'));
+      const modeTabs = document.querySelector('.miku-mode-tabs');
+      const modeTabItems = [...modeTabs.querySelectorAll('.miku-mode-tab')];
+      const modeIndicator = modeTabs.querySelector('.miku-tab-indicator');
+      const composerSection = document.querySelector('.miku-composer-section');
+      const questionBox = document.querySelector('.miku-question-box');
+      const surfaceSvg = composerSection.querySelector('.miku-composer-surface');
+      const surfacePath = surfaceSvg.querySelector('path');
+      const outlineSvg = composerSection.querySelector('.miku-composer-outline');
+      const outlinePath = outlineSvg.querySelector(':scope > path');
+      let modeSwitchFrame = 0;
+      let outlineAnimationFrame = 0;
+      let outlineGeometry = null;
+      const outlineInset = 0;
+      const outlineDuration = 340;
+      const easeOutline = (value) => 1 - Math.pow(1 - value, 3);
+      const measureOutline = (active) => {
+        const sectionRect = composerSection.getBoundingClientRect();
+        const questionRect = questionBox.getBoundingClientRect();
+        const tabsRect = modeTabs.getBoundingClientRect();
+        const activeRect = active.getBoundingClientRect();
+        return {
+          sectionWidth: sectionRect.width,
+          sectionHeight: sectionRect.height,
+          left: questionRect.left - sectionRect.left,
+          right: questionRect.right - sectionRect.left,
+          top: questionRect.top - sectionRect.top,
+          bottom: questionRect.bottom - sectionRect.top,
+          tabTop: tabsRect.top - sectionRect.top,
+          tabStart: activeRect.left - sectionRect.left,
+          tabEnd: activeRect.right - sectionRect.left
+        };
+      };
+      const buildOutlinePath = (geometry) => {
+        const { left, right, top, bottom, tabTop, tabStart, tabEnd } = geometry;
+        const topRadius = Math.min(28, (right - left) / 2, (bottom - top) / 2);
+        const tabRadius = Math.min(18, (tabEnd - tabStart) / 2, (top - tabTop) / 2);
+        const join = Math.max(6, Math.min(18, tabStart - left, right - tabEnd));
+        const q = (number) => Number(number.toFixed(2));
+        return [
+          `M ${q(left + topRadius)} ${q(top)}`,
+          `L ${q(tabStart - join)} ${q(top)}`,
+          `Q ${q(tabStart)} ${q(top)} ${q(tabStart)} ${q(top - join)}`,
+          `L ${q(tabStart)} ${q(tabTop + tabRadius)}`,
+          `Q ${q(tabStart)} ${q(tabTop)} ${q(tabStart + tabRadius)} ${q(tabTop)}`,
+          `L ${q(tabEnd - tabRadius)} ${q(tabTop)}`,
+          `Q ${q(tabEnd)} ${q(tabTop)} ${q(tabEnd)} ${q(tabTop + tabRadius)}`,
+          `L ${q(tabEnd)} ${q(top - join)}`,
+          `Q ${q(tabEnd)} ${q(top)} ${q(tabEnd + join)} ${q(top)}`,
+          `L ${q(right - topRadius)} ${q(top)}`,
+          `Q ${q(right)} ${q(top)} ${q(right)} ${q(top + topRadius)}`,
+          `L ${q(right)} ${q(bottom - topRadius)}`,
+          `Q ${q(right)} ${q(bottom)} ${q(right - topRadius)} ${q(bottom)}`,
+          `L ${q(left + topRadius)} ${q(bottom)}`,
+          `Q ${q(left)} ${q(bottom)} ${q(left)} ${q(bottom - topRadius)}`,
+          `L ${q(left)} ${q(top + topRadius)}`,
+          `Q ${q(left)} ${q(top)} ${q(left + topRadius)} ${q(top)}`
+        ].join(' ');
+      };
+      const renderOutline = (geometry) => {
+        outlineSvg.setAttribute('viewBox', `0 0 ${geometry.sectionWidth} ${geometry.sectionHeight}`);
+        surfaceSvg.setAttribute('viewBox', `0 0 ${geometry.sectionWidth} ${geometry.sectionHeight}`);
+        const insetGeometry = {
+          ...geometry,
+          left: geometry.left + outlineInset,
+          right: geometry.right - outlineInset,
+          top: geometry.top + outlineInset,
+          bottom: geometry.bottom - outlineInset,
+          tabTop: geometry.tabTop + outlineInset,
+          tabStart: geometry.tabStart + outlineInset,
+          tabEnd: geometry.tabEnd - outlineInset
+        };
+        const outlineD = buildOutlinePath(insetGeometry);
+        outlinePath.setAttribute('d', outlineD);
+        surfacePath.setAttribute('d', outlineD);
+      };
+      const animateOutlineTo = (target, { initial = false } = {}) => {
+        cancelAnimationFrame(outlineAnimationFrame);
+        if (initial || !outlineGeometry) {
+          outlineGeometry = target;
+          renderOutline(target);
+          return;
+        }
+        const from = outlineGeometry;
+        const startedAt = performance.now();
+        const tick = (now) => {
+          const progress = Math.min(1, (now - startedAt) / outlineDuration);
+          const eased = easeOutline(progress);
+          const frame = Object.fromEntries(Object.keys(target).map((key) => [key, from[key] + (target[key] - from[key]) * eased]));
+          outlineGeometry = frame;
+          renderOutline(frame);
+          if (progress < 1) outlineAnimationFrame = requestAnimationFrame(tick);
+        };
+        outlineAnimationFrame = requestAnimationFrame(tick);
+      };
+      const syncModeIndicator = ({ initial = false } = {}) => {
+        const active = modeTabs.querySelector('.miku-mode-tab.is-active');
+        if (!active) return;
+        modeIndicator.style.transform = `translate3d(${active.offsetLeft}px, 0, 0)`;
+        modeIndicator.style.width = `${active.offsetWidth}px`;
+        animateOutlineTo(measureOutline(active), { initial });
+        if (initial) {
+          modeTabs.classList.remove('is-ready');
+          requestAnimationFrame(() => modeTabs.classList.add('is-ready'));
+        } else {
+          modeTabs.classList.add('is-ready');
+        }
+      };
+      modeTabItems.forEach((tab) => tab.addEventListener('click', () => {
+        cancelAnimationFrame(modeSwitchFrame);
+        modeSwitchFrame = requestAnimationFrame(() => {
+          modeTabItems.forEach((item) => {
+            const selected = item === tab;
+            item.classList.toggle('is-active', selected);
+            item.setAttribute('aria-selected', selected ? 'true' : 'false');
+          });
+          syncModeIndicator();
+        });
+      }));
+      window.addEventListener('resize', () => syncModeIndicator());
+      syncModeIndicator({ initial: true });
+      document.querySelector('#upgradeButton').addEventListener('click', () => showToast('Pro plan is not connected in this copy'));
+      document.querySelectorAll('.template-tab').forEach((tab) => tab.addEventListener('click', () => {
+        document.querySelectorAll('.template-tab').forEach((item) => {
+          item.classList.toggle('is-active', item === tab);
+          item.setAttribute('aria-selected', item === tab ? 'true' : 'false');
+        });
+        showToast(`${tab.textContent.trim()} selected`);
+      }));
+      document.querySelectorAll('.template-card').forEach((card) => card.addEventListener('click', () => showToast(`${card.dataset.template} template selected`)));
+      document.querySelector('#templateMore').addEventListener('click', () => showToast('More templates are coming soon'));
+    </script>
+  </body>
+</html>
