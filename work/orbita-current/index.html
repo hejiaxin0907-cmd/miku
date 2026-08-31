@@ -133,7 +133,7 @@
 
       .workspace { flex: 1; min-width: 0; min-height: 100dvh; padding: 24px clamp(24px, 4vw, 64px) 30px; display: flex; flex-direction: column; }
       .topbar { min-height: 46px; display: flex; align-items: flex-start; justify-content: flex-start; }
-      .template-search { position: relative; width: min(320px, 100%); max-width: 320px; }
+      .template-search { position: relative; width: min(280px, 100%); max-width: 280px; }
       .template-search-input { display: block; width: 100%; height: 40px; padding: 0 16px 0 42px; border: 2px solid transparent; border-radius: 12px; outline: none; background: #f3f3f4; color: var(--ink); font: inherit; font-size: 14px; line-height: 28px; transition: .3s ease; }
       .template-search-input::placeholder { color: #9e9ea7; }
       .template-search-input:focus, .template-search-input:hover { border-color: rgba(108, 140, 244, .42); background: #fff; box-shadow: 0 0 0 4px rgba(108, 140, 244, .10); }
@@ -146,37 +146,50 @@
       .hero h1 span { display: inline-block; font-size: .84em; transform: translateY(-1px); }
       .hero p { margin: 13px auto 0; color: var(--muted); font-size: 14px; line-height: 1.5; letter-spacing: -.01em; }
 
-      .skill-strip { width: min(100%, 860px); margin: 24px auto 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 68px; gap: 10px; }
-      .skill-card { min-width: 0; min-height: 52px; padding: 6px 10px; border: 1px solid rgba(211, 216, 216, .78); border-radius: 17px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); display: flex; align-items: center; gap: 10px; text-align: left; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
+      .skill-strip { width: max-content; max-width: 100%; margin: 14px auto 0; display: flex; gap: 8px; }
+      .skill-card { flex: 0 0 auto; min-width: 0; min-height: 36px; padding: 3px 8px; border: 1px solid rgba(211, 216, 216, .78); border-radius: 999px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
       .skill-card:hover, .skill-card:focus-visible { border-color: rgba(211, 216, 216, .78); background: #fff; color: var(--blue); box-shadow: 0 6px 14px rgba(22, 34, 53, .08); transform: translateY(-1px); }
       .skill-card:active { transform: translateY(0); }
-      .skill-card-thumb { width: 52px; height: 36px; flex: 0 0 52px; overflow: hidden; border-radius: 10px; object-fit: cover; background: #eef1ef; }
-      .skill-card-label { min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
-      .skill-more { min-width: 0; min-height: 52px; padding: 6px 8px; border: 1px solid rgba(211, 216, 216, .78); border-radius: 17px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); font-size: 14px; font-weight: 600; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
+      .skill-card-label { min-width: 0; overflow: hidden; font-size: 11.5px; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+      .skill-card:nth-child(n + 6) { display: none; }
+      .skill-strip.is-showing-more .skill-card:nth-child(-n + 5) { display: none; }
+      .skill-strip.is-showing-more .skill-card:nth-child(n + 6) { display: flex; }
+      .skill-more { width: 36px; min-width: 36px; min-height: 36px; padding: 0; border: 1px solid rgba(211, 216, 216, .78); border-radius: 999px; background: rgba(246, 247, 247, .82); color: var(--ink-soft); display: inline-flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .2s var(--ease); }
       .skill-more:hover, .skill-more:focus-visible { border-color: rgba(211, 216, 216, .78); background: #fff; color: var(--ink); box-shadow: 0 6px 14px rgba(22, 34, 53, .08); transform: translateY(-1px); }
       .skill-more:active { transform: translateY(0); }
+      .skill-more-icon { display: inline-flex; width: 18px; height: 18px; align-items: center; justify-content: center; transition: transform .25s var(--ease); }
+      .skill-more-icon svg { display: block; width: 18px; height: 18px; }
+      .skill-strip.is-showing-more .skill-more-icon { transform: rotate(180deg); }
 
-      .miku-composer-section { --miku-row-height: 32px; position: relative; width: min(100%, 860px); margin: clamp(32px, 4vh, 44px) auto 0; padding: 0 3px 3px; overflow: visible; border: 0; border-radius: 0; background: transparent; background-image: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-      .miku-composer-section::before { content: ""; position: absolute; left: 3px; right: 3px; top: calc(100% - var(--miku-row-height) - 28px); bottom: 0; z-index: 0; border-radius: 0 0 28px 28px; background: rgba(65, 105, 225, .26); pointer-events: none; }
+      .miku-composer-section { --miku-row-height: 42px; --miku-action-row-height: 40px; position: relative; width: min(100%, 860px); margin: clamp(72px, 8vh, 104px) auto 0; padding: 0 3px 0; overflow: visible; border: 0; border-radius: 0; background: transparent; background-image: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .miku-composer-section::before { content: ""; position: absolute; left: 3px; right: 3px; top: calc(100% - var(--miku-action-row-height) - 28px); bottom: 0; z-index: 0; border-radius: 0 0 28px 28px; background: linear-gradient(180deg, rgba(241, 245, 255, .56) 0%, rgba(213, 225, 255, .48) 45%, rgba(183, 201, 255, .42) 100%); pointer-events: none; }
       .miku-composer-surface { display: none; }
       .miku-composer-surface path { fill: #fff; stroke: none; }
       .miku-composer-outline { display: none; }
-      .miku-mode-tabs { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: center; gap: 12px; width: auto; height: var(--miku-row-height); margin: 0; background: transparent; }
+      .miku-mode-tabs { position: relative; top: -8px; z-index: 3; display: flex; align-items: center; justify-content: center; gap: 4px; width: max-content; max-width: 100%; height: var(--miku-row-height); margin: 0 auto; padding: 4px; overflow-x: auto; border-radius: 999px; background: rgba(232, 235, 244, .88); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), 0 2px 8px rgba(54, 70, 110, .04); scrollbar-width: none; }
+      .miku-mode-tabs::-webkit-scrollbar { display: none; }
       .miku-mode-tabs::before { content: none; }
       .miku-tab-indicator { display: none; }
       .miku-mode-tabs:not(.is-ready) .miku-tab-indicator { transition: none; }
-      .miku-mode-tab { position: relative; z-index: 1; min-height: 28px; padding: 2px 12px 2px 8px; border: 0; border-radius: 14px 14px 0 0; background: transparent; color: #6d797c; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; font-weight: 600; line-height: 16.8px; box-shadow: none; transition: color .2s ease, transform .2s var(--ease); }
+      .miku-mode-tab { position: relative; z-index: 1; min-height: 34px; height: 34px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: #313b43; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; font-size: 14px; font-weight: 600; line-height: 34px; box-shadow: none; transition: color .18s ease, background-color .18s ease, box-shadow .18s ease; }
       .miku-mode-tab:focus { outline: none; }
       .miku-mode-icon { width: 14px; height: 14px; flex: 0 0 auto; color: currentColor; }
-      .miku-mode-tab:hover { color: var(--ink); transform: none; background: transparent; }
-      .miku-mode-tab.is-active { z-index: 1; background: transparent; color: var(--blue); font-weight: 600; box-shadow: none; }
+      .miku-mode-tab > *:not(.miku-mode-background) { position: relative; z-index: 1; }
+      .miku-mode-tab:hover { color: #313b43; background: transparent; }
+      .miku-mode-tab.is-active { z-index: 1; background: transparent; color: var(--blue); font-weight: 650; box-shadow: none; }
+      .miku-mode-tab:hover .miku-mode-background { opacity: 1; }
+      .miku-mode-tab.is-active .miku-mode-background { opacity: 1; background: #fff; }
+      .miku-mode-background { position: absolute; inset: 0; transform: none; height: auto; width: auto; background: #e6e7ee; opacity: 0; z-index: 0; border-radius: inherit; box-shadow: 0 1px 4px rgba(54, 70, 110, .08); transition: opacity .14s ease; pointer-events: none; }
       .miku-mode-tab.is-active::before, .miku-mode-tab.is-active::after { content: none; }
-      .miku-question-box { position: relative; z-index: 2; min-height: 132px; padding: 16px 20px; border: 1.6px solid rgba(210, 219, 233, .96); border-radius: 28px; background: var(--surface); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-      .miku-composer-tab { position: absolute; top: 16px; left: 20px; z-index: 1; display: inline-flex; align-items: center; height: 25px; padding: 0 9px; border: 1px solid rgba(125, 132, 139, .42); border-radius: 9px; color: #7b8388; font-size: 14px; line-height: 1; }
-      .miku-question-input { display: block; width: 100%; min-height: 96px; padding: 2px 0 0 64px; resize: none; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 16px; line-height: 1.5; }
+      .miku-question-box { position: relative; z-index: 2; min-height: 132px; padding: 16px 20px; border: 1.6px solid rgba(210, 219, 233, .96); border-bottom: 0; border-radius: 28px; background: var(--surface); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .miku-composer-tab { position: absolute; top: 18px; left: 20px; z-index: 1; display: inline-flex; align-items: center; height: 20px; padding: 0 5px; border: 1px solid rgba(125, 132, 139, .42); border-radius: 10px; color: #7b8388; font-size: 14px; line-height: 1; }
+      .miku-question-placeholder { position: absolute; top: 17px; left: 66px; right: 20px; z-index: 1; overflow: hidden; color: #929c9d; font-size: 15px; line-height: 22px; white-space: nowrap; text-overflow: ellipsis; pointer-events: none; transition: opacity .2s ease, transform .2s var(--ease); }
+      .miku-question-placeholder.is-changing { opacity: 0; transform: translateY(-3px); }
+      .miku-question-placeholder.is-hidden { opacity: 0; visibility: hidden; }
+      .miku-question-input { position: relative; z-index: 2; display: block; width: 100%; min-height: 96px; padding: 2px 0 0 46px; resize: none; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 15px; line-height: 1.5; }
       .miku-question-input:focus-visible { outline: 0; }
-      .miku-question-input::placeholder { color: #929c9d; opacity: 1; font-size: 14px; }
-      .miku-composer-actions { position: relative; z-index: 3; display: flex; align-items: center; justify-content: flex-start; gap: 14px; height: var(--miku-row-height); margin: 0; background: transparent; }
+      .miku-question-input::placeholder { color: transparent; opacity: 0; font-size: 15px; }
+      .miku-composer-actions { position: relative; z-index: 3; display: flex; align-items: center; justify-content: flex-start; gap: 14px; height: var(--miku-action-row-height); margin: 0; background: transparent; }
       .miku-composer-actions::before { content: none; }
       .miku-composer-actions-left { position: relative; z-index: 1; min-width: 0; display: flex; align-items: center; gap: 0; padding: 0 0 0 8px; overflow-x: auto; border: 0; border-radius: 0; background: transparent; box-shadow: none; scrollbar-width: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
       .miku-composer-actions-left::-webkit-scrollbar { display: none; }
@@ -188,9 +201,11 @@
       #settingsButton > .icon-slot:first-child,
       #uploadButton > .icon-slot:first-child { width: 16px; height: 16px; }
       #modelButton > .icon-slot:last-child { width: 14px; height: 14px; }
-      .miku-send-button { position: absolute; right: 14px; bottom: 12px; z-index: 2; flex: 0 0 auto; width: 42px; min-width: 42px; height: 34px; padding: 0; border: 0; border-radius: 999px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 7px 16px rgba(19, 31, 61, .18), inset 0 1px 0 rgba(255, 255, 255, .14); transition: transform .2s var(--ease), box-shadow .2s ease, filter .2s ease; }
-      .miku-send-button .icon-slot { width: 14px; height: 14px; }
-      .miku-send-button:hover { filter: brightness(1.06); box-shadow: 0 10px 22px rgba(19, 31, 61, .24), inset 0 1px 0 rgba(255, 255, 255, .18); transform: translateY(-2px); }
+      .miku-send-button-wrap { position: absolute; top: 50%; right: 24px; z-index: 4; width: 54px; height: 26px; border-radius: 999vw; background: transparent; pointer-events: none; transform: translateY(-50%); }
+      .miku-send-button { all: unset; cursor: pointer; position: relative; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; padding: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); pointer-events: auto; z-index: 3; display: inline-flex; align-items: center; justify-content: center; background: rgba(108, 140, 244, .52); border-radius: 999vw; color: #fff; box-shadow: none; transition: none; }
+      .miku-send-button-label { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 0; user-select: none; -webkit-user-select: none; color: #fff; }
+      .miku-send-button .icon-slot { position: relative; z-index: 3; width: 14px; height: 14px; color: #fff; }
+      .miku-send-button .icon-slot svg { color: #fff; stroke: none; fill: currentColor; }
 
       .template-library { width: 100%; margin: auto auto 0; }
       .template-library-header { display: flex; align-items: center; gap: 24px; margin-bottom: 14px; }
@@ -202,10 +217,12 @@
       .template-more span { display: inline-block; margin-left: 3px; font-size: 19px; line-height: 0; transform: translateY(2px); }
       .template-grid { display: flex; gap: 14px; overflow-x: auto; padding: 0 2px 6px; scrollbar-width: none; scroll-behavior: smooth; }
       .template-grid::-webkit-scrollbar { display: none; }
-      .template-card { flex: 0 0 clamp(180px, 15vw, 232px); min-width: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 17px; background: #f5f7f5; color: var(--ink); text-align: left; transition: transform .2s var(--ease), border-color .2s ease, box-shadow .2s ease; }
-      .template-card:hover { border-color: #ccd3d0; box-shadow: var(--shadow); transform: translateY(-2px); }
-      .template-card-media { display: block; aspect-ratio: 1.28; padding: 9px; background: #eef1ef; }
+      .template-card { flex: 0 0 clamp(180px, 15vw, 232px); min-width: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 17px; background: #f5f7f5; color: var(--ink); text-align: left; transition: border-color .2s ease; }
+      .template-card:hover { border-color: var(--line); }
+      .template-card-media { position: relative; display: block; aspect-ratio: 1.28; padding: 9px; background: #eef1ef; }
       .template-card-media img { display: block; width: 100%; height: 100%; border-radius: 11px; object-fit: cover; }
+      .template-card-cta { position: absolute; left: 50%; bottom: 16px; z-index: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 0 18px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; background: rgba(255, 255, 255, .38); color: #35446d; font-size: 12px; font-weight: 650; line-height: 1; opacity: 0; pointer-events: none; transform: translate(-50%, 5px); box-shadow: 0 4px 12px rgba(22, 34, 53, .10), inset 0 1px 0 rgba(255, 255, 255, .24); backdrop-filter: blur(10px) saturate(1.08); -webkit-backdrop-filter: blur(10px) saturate(1.08); transition: opacity .18s ease, transform .18s var(--ease); }
+      .template-card:hover .template-card-cta, .template-card:focus-visible .template-card-cta { opacity: 1; transform: translate(-50%, 0); }
       .template-card-title { display: block; overflow: hidden; padding: 10px 12px 12px; font-size: 12px; font-weight: 620; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 
       @media (min-width: 1500px) {
@@ -232,9 +249,9 @@
         .hero-orb { width: 54px; height: 46px; margin-bottom: 12px; }
         .hero h1 { font-size: 32px; }
         .hero p { margin-top: 8px; font-size: 12px; }
-        .miku-composer-section { --miku-row-height: 36px; margin-top: 58px; }
-        .miku-mode-tabs { gap: 10px; min-height: 36px; }
-        .miku-mode-tab { min-height: 30px; padding: 3px 12px 3px 8px; gap: 7px; font-size: 14px; }
+        .miku-composer-section { --miku-row-height: 36px; margin-top: 88px; }
+        .miku-mode-tabs { gap: 4px; min-height: 38px; }
+        .miku-mode-tab { min-height: 30px; height: 30px; padding: 0 12px; gap: 7px; font-size: 14px; line-height: 30px; }
         .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 15px; height: 15px; }
         .miku-question-box { min-height: 120px; padding-top: 15px; padding-bottom: 15px; }
         .miku-question-input { min-height: 90px; }
@@ -255,18 +272,20 @@
         .workspace { min-height: calc(100dvh - 67px); padding: 18px 16px 24px; }
         .topbar { min-height: 40px; }
         .hero { padding-top: 48px; }
-        .miku-composer-section { --miku-row-height: 40px; width: 100%; margin-top: 32px; }
-        .miku-mode-tabs { min-height: 36px; gap: 10px; }
-        .miku-mode-tab { min-width: 0; flex: 1 1 0; padding: 5px 8px; gap: 6px; font-size: 14px; line-height: 1.15; white-space: normal; }
+        .miku-composer-section { --miku-row-height: 40px; width: 100%; margin-top: 64px; }
+        .miku-mode-tabs { width: 100%; min-height: 36px; gap: 3px; padding: 3px; }
+        .miku-mode-tab { min-width: 0; flex: 1 1 0; min-height: 30px; height: 30px; padding: 0 8px; gap: 5px; font-size: 13px; line-height: 30px; white-space: nowrap; }
         .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 16px; height: 16px; }
         .miku-question-box { min-height: 150px; padding: 17px; }
         .miku-question-input { min-height: 108px; font-size: 14px; }
         .miku-composer-actions { gap: 8px; }
         .miku-composer-actions-left { padding-left: 4px; padding-right: 4px; }
         .miku-action-button { padding-left: 9px; padding-right: 9px; }
-        .miku-send-button { width: 40px; min-width: 40px; height: 32px; }
-        .skill-strip { width: 100%; margin-top: 24px; grid-template-columns: repeat(4, minmax(200px, 72vw)) 76px; overflow-x: auto; padding: 0 2px 6px; scrollbar-width: none; }
+        .miku-send-button-wrap { right: 18px; width: 48px; height: 24px; }
+        .skill-strip { width: 100%; margin-top: 14px; overflow-x: auto; padding: 0 2px 6px; scrollbar-width: none; }
         .skill-strip::-webkit-scrollbar { display: none; }
+        .skill-card { min-height: 36px; }
+        .skill-more { width: 36px; min-width: 36px; min-height: 36px; }
         .template-library { margin-top: 42px; }
         .template-library-header { overflow-x: auto; gap: 14px; }
         .template-tabs { gap: 16px; }
@@ -324,26 +343,6 @@
           <h1 id="greeting">今天你想做些什么？</h1>
         </section>
 
-        <section class="skill-strip" aria-label="常用技能">
-          <button class="skill-card" type="button" data-skill="品牌视觉全案" data-prompt="请帮我制定一套品牌视觉全案">
-            <img class="skill-card-thumb" src="./assets/template-library/promotion-poster.png" alt="" />
-            <span class="skill-card-label">品牌视觉全案</span>
-          </button>
-          <button class="skill-card" type="button" data-skill="IP 设计全案" data-prompt="请帮我完成一套 IP 设计全案">
-            <img class="skill-card-thumb" src="./assets/template-library/conversation-poster.png" alt="" />
-            <span class="skill-card-label">IP 设计全案</span>
-          </button>
-          <button class="skill-card" type="button" data-skill="TikTok 带货短视频" data-prompt="请帮我策划一支 TikTok 带货短视频">
-            <img class="skill-card-thumb" src="./assets/template-library/knowledge-poster.png" alt="" />
-            <span class="skill-card-label">TikTok 带货短视频</span>
-          </button>
-          <button class="skill-card" type="button" data-skill="APP 界面设计" data-prompt="请帮我设计一套 APP 界面">
-            <img class="skill-card-thumb" src="./assets/template-library/calendar-poster.png" alt="" />
-            <span class="skill-card-label">APP 界面设计</span>
-          </button>
-          <button class="skill-more" type="button" id="moreSkillsButton" aria-label="查看更多技能">更多</button>
-        </section>
-
         <section class="miku-composer-section" aria-label="Miku style glass input">
           <svg class="miku-composer-surface" aria-hidden="true" focusable="false" preserveAspectRatio="none">
             <path></path>
@@ -360,14 +359,14 @@
           </svg>
           <div class="miku-mode-tabs" role="tablist" aria-label="对话类型">
             <span class="miku-tab-indicator" aria-hidden="true"></span>
-            <button class="miku-mode-tab is-active" type="button" role="tab" aria-selected="true"><span class="icon-slot miku-mode-icon">{{PLAN}}</span><span>方案策划</span></button>
-            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{IMAGE}}</span><span>图片生成</span></button>
-            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{VIDEO}}</span><span>视频生成</span></button>
+            <button class="miku-mode-tab is-active" type="button" role="tab" aria-selected="true"><span class="icon-slot miku-mode-icon">{{PLAN}}</span><span>方案策划</span><span class="miku-mode-background" aria-hidden="true"></span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{IMAGE}}</span><span>图片生成</span><span class="miku-mode-background" aria-hidden="true"></span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{VIDEO}}</span><span>视频生成</span><span class="miku-mode-background" aria-hidden="true"></span></button>
           </div>
           <div class="miku-question-box">
             <span class="miku-composer-tab" aria-hidden="true">Tab</span>
-            <textarea class="miku-question-input" rows="3" placeholder="例：帮我制定一个新产品的上市营销方案" aria-label="Miku glass input"></textarea>
-            <button class="miku-send-button" type="button" id="sendButton" aria-label="发送"><span class="icon-slot">{{SEND}}</span></button>
+            <span class="miku-question-placeholder" aria-hidden="true">我想制定一个新产品的上市营销方案</span>
+            <textarea class="miku-question-input" rows="3" placeholder="我想制定一个新产品的上市营销方案" aria-label="Miku glass input"></textarea>
           </div>
           <div class="miku-composer-actions" aria-label="输入框操作">
             <div class="miku-composer-actions-left">
@@ -377,7 +376,46 @@
               <span class="miku-action-divider" aria-hidden="true"></span>
               <button class="miku-action-button miku-model-button" type="button" id="modelButton"><span class="icon-slot">{{MODEL}}</span><span>模型选择</span><span class="icon-slot">{{CHEVRON}}</span></button>
             </div>
+            <div class="miku-send-button-wrap">
+              <button class="miku-send-button" type="button" id="sendButton" aria-label="发送"><span class="miku-send-button-label"><span class="icon-slot">{{SEND}}</span></span></button>
+            </div>
           </div>
+        </section>
+
+        <section class="skill-strip" id="skill-strip" aria-label="常用技能">
+          <button class="skill-card" type="button" data-skill="新品上市营销" data-prompt="请帮我制定一套新品上市营销方案">
+            <span class="skill-card-label">新品上市营销</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="品牌 / IP 起号" data-prompt="请帮我策划品牌 / IP 起号方案">
+            <span class="skill-card-label">品牌 / IP 起号</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="小红书种草矩阵" data-prompt="请帮我搭建小红书种草矩阵">
+            <span class="skill-card-label">小红书种草矩阵</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="短视频脚本与分镜" data-prompt="请帮我撰写短视频脚本与分镜">
+            <span class="skill-card-label">短视频脚本与分镜</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="活动与促销传播" data-prompt="请帮我策划活动与促销传播">
+            <span class="skill-card-label">活动与促销传播</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="一周内容排期" data-prompt="请帮我制定一周内容排期">
+            <span class="skill-card-label">一周内容排期</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="用户口碑与 UGC 内容" data-prompt="请帮我策划用户口碑与 UGC 内容">
+            <span class="skill-card-label">用户口碑与 UGC 内容</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="竞品、舆情与趋势分析" data-prompt="请帮我分析竞品、舆情与趋势">
+            <span class="skill-card-label">竞品、舆情与趋势分析</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="产品卖点提炼" data-prompt="请帮我提炼产品卖点">
+            <span class="skill-card-label">产品卖点提炼</span>
+          </button>
+          <button class="skill-card" type="button" data-skill="营销复盘与下一轮优化" data-prompt="请帮我完成营销复盘并制定下一轮优化方案">
+            <span class="skill-card-label">营销复盘与下一轮优化</span>
+          </button>
+          <button class="skill-more" type="button" id="moreSkillsButton" aria-label="显示后5个技能" aria-controls="skill-strip" aria-expanded="false" title="显示后5个技能">
+            <span class="skill-more-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+          </button>
         </section>
 
         <section class="template-library" aria-labelledby="template-library-title">
@@ -393,35 +431,35 @@
           </div>
           <div class="template-grid">
             <button class="template-card" type="button" data-template="创意招聘招募海报">
-              <span class="template-card-media"><img src="./assets/template-library/recruitment-poster.png" alt="创意招聘招募海报模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/recruitment-poster.png" alt="创意招聘招募海报模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">卡通拼贴风创意招聘招募海报</span>
             </button>
             <button class="template-card" type="button" data-template="职场对话小红书封面">
-              <span class="template-card-media"><img src="./assets/template-library/conversation-poster.png" alt="职场对话小红书封面模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/conversation-poster.png" alt="职场对话小红书封面模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">职场对话小红书封面</span>
             </button>
             <button class="template-card" type="button" data-template="知识攻略内容封面">
-              <span class="template-card-media"><img src="./assets/template-library/knowledge-poster.png" alt="知识攻略内容封面模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/knowledge-poster.png" alt="知识攻略内容封面模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">知识攻略内容封面</span>
             </button>
             <button class="template-card" type="button" data-template="红色促销活动海报">
-              <span class="template-card-media"><img src="./assets/template-library/promotion-poster.png" alt="红色促销活动海报模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/promotion-poster.png" alt="红色促销活动海报模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">红色促销活动主题海报</span>
             </button>
             <button class="template-card" type="button" data-template="内容日历排期模板">
-              <span class="template-card-media"><img src="./assets/template-library/calendar-poster.png" alt="内容日历排期模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/calendar-poster.png" alt="内容日历排期模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">内容日历排期模板</span>
             </button>
             <button class="template-card" type="button" data-template="新品上市视觉模板">
-              <span class="template-card-media"><img src="./assets/template-library/launch-poster.png" alt="新品上市视觉模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/launch-poster.png" alt="新品上市视觉模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">新品上市视觉模板</span>
             </button>
             <button class="template-card" type="button" data-template="生活方式分享封面">
-              <span class="template-card-media"><img src="./assets/template-library/wellness-poster.png" alt="生活方式分享封面模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/wellness-poster.png" alt="生活方式分享封面模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">生活方式分享封面</span>
             </button>
             <button class="template-card" type="button" data-template="探店攻略图文模板">
-              <span class="template-card-media"><img src="./assets/template-library/cafe-poster.png" alt="探店攻略图文模板" /></span>
+              <span class="template-card-media"><img src="./assets/template-library/cafe-poster.png" alt="探店攻略图文模板" /><span class="template-card-cta" aria-hidden="true">做同款</span></span>
               <span class="template-card-title">探店攻略图文模板</span>
             </button>
           </div>
@@ -569,13 +607,60 @@
       document.querySelector('#uploadButton').addEventListener('click', () => showToast('上传文件功能待接入'));
       document.querySelector('#sendButton').addEventListener('click', () => showToast(document.querySelector('.miku-question-input').value.trim() ? '已发送' : '请先输入内容'));
       const skillInput = document.querySelector('.miku-question-input');
+      const questionPlaceholder = document.querySelector('.miku-question-placeholder');
+      const questionPrompts = [
+        '我想制定一个新产品的上市营销方案',
+        '我想策划品牌 / IP 起号方案',
+        '我想搭建小红书种草矩阵',
+        '我想撰写短视频脚本与分镜',
+        '我想策划活动与促销传播',
+        '我想制定一周内容排期',
+        '我想策划用户口碑与 UGC 内容',
+        '我想分析竞品、舆情与趋势',
+        '我想提炼产品卖点',
+        '我想完成营销复盘并制定下一轮优化方案'
+      ];
+      let questionPromptIndex = 0;
+      let placeholderSwapTimer = 0;
+      const syncQuestionPlaceholder = () => {
+        questionPlaceholder.classList.toggle('is-hidden', Boolean(skillInput.value.trim()));
+      };
+      const rotateQuestionPlaceholder = () => {
+        if (skillInput.value.trim()) return;
+        questionPlaceholder.classList.add('is-changing');
+        clearTimeout(placeholderSwapTimer);
+        placeholderSwapTimer = window.setTimeout(() => {
+          questionPromptIndex = (questionPromptIndex + 1) % questionPrompts.length;
+          const prompt = questionPrompts[questionPromptIndex];
+          questionPlaceholder.textContent = prompt;
+          skillInput.placeholder = prompt;
+          questionPlaceholder.classList.remove('is-changing');
+        }, 200);
+      };
+      skillInput.addEventListener('input', syncQuestionPlaceholder);
+      window.setInterval(rotateQuestionPlaceholder, 4200);
+      skillInput.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab' || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey || skillInput.value.trim()) return;
+        event.preventDefault();
+        skillInput.value = skillInput.placeholder;
+        skillInput.dispatchEvent(new Event('input', { bubbles: true }));
+        skillInput.setSelectionRange(skillInput.value.length, skillInput.value.length);
+      });
       document.querySelectorAll('.skill-card').forEach((card) => card.addEventListener('click', () => {
         skillInput.value = card.dataset.prompt;
         skillInput.dispatchEvent(new Event('input', { bubbles: true }));
         skillInput.focus();
         showToast(`${card.dataset.skill} 已加入输入框`);
       }));
-      document.querySelector('#moreSkillsButton').addEventListener('click', () => showToast('更多技能即将开放'));
+      const skillStrip = document.querySelector('#skill-strip');
+      const moreSkillsButton = document.querySelector('#moreSkillsButton');
+      moreSkillsButton.addEventListener('click', () => {
+        const showingMore = skillStrip.classList.toggle('is-showing-more');
+        moreSkillsButton.setAttribute('aria-expanded', String(showingMore));
+        moreSkillsButton.setAttribute('aria-label', showingMore ? '显示前5个技能' : '显示后5个技能');
+        moreSkillsButton.title = showingMore ? '显示前5个技能' : '显示后5个技能';
+        skillStrip.scrollLeft = 0;
+      });
       const modeTabs = document.querySelector('.miku-mode-tabs');
       const modeTabItems = [...modeTabs.querySelectorAll('.miku-mode-tab')];
       const modeIndicator = modeTabs.querySelector('.miku-tab-indicator');
