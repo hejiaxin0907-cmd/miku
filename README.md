@@ -25,3 +25,14 @@ node server.mjs
 ```
 
 打开 <http://127.0.0.1:4178/>。
+
+## Orbita 入口页面 demo
+
+AI Chat、设计工具和任务中心的同步 demo 位于 `work/stitch_ai_creative_agent_platform_orbita/stitch_ai_creative_agent_platform/`，共用 Orbita 左侧栏和中文适配层：
+
+```bash
+cd work/stitch_ai_creative_agent_platform_orbita/stitch_ai_creative_agent_platform
+node hot-preview-server.mjs
+```
+
+打开 <http://127.0.0.1:4180/>，也可以直接访问 `/ai_ai_agent/`、`/ai_agent_1/` 和 `/ai_agent_2/`。

@@ -166,21 +166,48 @@
       .miku-composer-surface { display: none; }
       .miku-composer-surface path { fill: #fff; stroke: none; }
       .miku-composer-outline { display: none; }
-      .miku-mode-tabs { position: relative; top: -8px; z-index: 3; display: flex; align-items: center; justify-content: center; gap: 4px; width: max-content; max-width: 100%; height: var(--miku-row-height); margin: 0 auto; padding: 4px; overflow-x: auto; border-radius: 999px; background: rgba(232, 235, 244, .88); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), 0 2px 8px rgba(54, 70, 110, .04); scrollbar-width: none; }
+      .miku-mode-tabs { --miku-tab-active-height: clamp(62px, 5.2vw, 78px); --miku-tab-inactive-height: clamp(42px, 3.7vw, 57px); position: relative; top: -8px; z-index: 3; display: flex; align-items: flex-end; justify-content: center; gap: 8px; width: min(85.4%, 815px); max-width: 100%; height: var(--miku-tab-active-height); margin: 0 auto -8px; padding: 0; overflow: visible; border-radius: 0; background: transparent; box-shadow: none; scrollbar-width: none; }
       .miku-mode-tabs::-webkit-scrollbar { display: none; }
       .miku-mode-tabs::before { content: none; }
       .miku-tab-indicator { display: none; }
       .miku-mode-tabs:not(.is-ready) .miku-tab-indicator { transition: none; }
-      .miku-mode-tab { position: relative; z-index: 1; min-height: 34px; height: 34px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: #313b43; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; font-size: 14px; font-weight: 600; line-height: 34px; box-shadow: none; transition: color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+      .miku-mode-tab { position: relative; z-index: 1; flex: 1 1 0; min-width: 0; min-height: var(--miku-tab-inactive-height); height: var(--miku-tab-inactive-height); padding: 0 20px; border: 0; border-radius: 18px 18px 0 0; background: linear-gradient(180deg, #edf0f9 0%, rgba(250, 251, 255, .24) 100%); color: #697174; display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px; white-space: nowrap; font-size: 14px; font-weight: 500; line-height: 20px; box-shadow: none; transition: flex-grow .28s cubic-bezier(.4, 0, .2, 1), height .28s cubic-bezier(.4, 0, .2, 1), color .18s ease, font-size .28s cubic-bezier(.4, 0, .2, 1), font-weight .28s cubic-bezier(.4, 0, .2, 1); }
+      .miku-mode-tab::before { content: none; }
+      .miku-mode-tab::after { content: ""; position: absolute; top: 2px; left: var(--miku-mode-english-inset, 20px); z-index: 1; color: rgba(255, 255, 255, .68); font-size: clamp(24px, 1.9vw, 30px); font-weight: 500; letter-spacing: .02em; line-height: 1; white-space: nowrap; text-shadow: none; -webkit-text-stroke: 0 transparent; pointer-events: none; transform: none; transition: top .28s cubic-bezier(.4, 0, .2, 1); }
+      .miku-mode-tab:nth-of-type(1)::after { content: "PLAN"; left: var(--miku-mode-english-inset, 20px); }
+      .miku-mode-tab:nth-of-type(2)::after { content: "IMAGE"; left: var(--miku-mode-english-inset, 20px); }
+      .miku-mode-tab:nth-of-type(3)::after { content: "VIDEO"; left: var(--miku-mode-english-inset, 20px); }
       .miku-mode-tab:focus { outline: none; }
-      .miku-mode-icon { width: 14px; height: 14px; flex: 0 0 auto; color: currentColor; }
-      .miku-mode-tab > *:not(.miku-mode-background) { position: relative; z-index: 1; }
-      .miku-mode-tab:hover { color: #313b43; background: transparent; }
-      .miku-mode-tab.is-active { z-index: 1; background: transparent; color: var(--blue); font-weight: 650; box-shadow: none; }
-      .miku-mode-tab:hover .miku-mode-background { opacity: 1; }
-      .miku-mode-tab.is-active .miku-mode-background { opacity: 1; background: #fff; }
-      .miku-mode-background { position: absolute; inset: 0; transform: none; height: auto; width: auto; background: #e6e7ee; opacity: 0; z-index: 0; border-radius: inherit; box-shadow: 0 1px 4px rgba(54, 70, 110, .08); transition: opacity .14s ease; pointer-events: none; }
-      .miku-mode-tab.is-active::before, .miku-mode-tab.is-active::after { content: none; }
+      .miku-mode-icon { width: 16px; height: 16px; flex: 0 0 auto; color: currentColor; transition: width .28s cubic-bezier(.4, 0, .2, 1), height .28s cubic-bezier(.4, 0, .2, 1); }
+      .miku-mode-icon svg, .miku-mode-icon img { width: 16px; height: 16px; transition: width .28s cubic-bezier(.4, 0, .2, 1), height .28s cubic-bezier(.4, 0, .2, 1); }
+      .miku-mode-tab > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { position: relative; z-index: 2; transition: transform .28s cubic-bezier(.4, 0, .2, 1); }
+      .miku-mode-indicator { display: none; }
+      .miku-mode-indicator svg { display: block; width: 100%; height: 100%; overflow: visible; }
+      .miku-mode-indicator linearGradient[id*="fill"] stop:first-child { stop-color: #e4eaff; }
+      .miku-mode-indicator linearGradient[id*="fill"] stop:last-child { stop-color: rgba(248, 249, 255, .06); }
+      .miku-mode-indicator path[fill="none"] { stroke: none; }
+      .miku-mode-shape-active linearGradient[id*="fill"] stop:first-child { stop-color: #d9e3ff; }
+      .miku-mode-shape-active linearGradient[id*="fill"] stop:last-child { stop-color: rgba(241, 243, 255, .08); }
+      .miku-mode-shape-active { opacity: 0; }
+      .miku-mode-tab.is-active .miku-mode-shape-idle { opacity: 0; }
+      .miku-mode-tab.is-active .miku-mode-shape-active { opacity: 1; }
+      .miku-mode-illustration { position: absolute; top: -18px; right: 2px; z-index: 0; display: block; width: min(160px, 72%); height: 80px; object-fit: contain; opacity: 0; transform: translate(0, 8px); filter: drop-shadow(0 6px 8px rgba(22, 34, 53, .1)); transition: opacity .2s ease, transform .28s var(--ease); pointer-events: none; }
+      .miku-mode-tab:not(.is-active):hover { color: #697174; }
+      .miku-mode-tab.is-active { z-index: 2; flex-grow: 1.45; height: var(--miku-tab-active-height); background: linear-gradient(180deg, #e6ecfb 0%, rgba(247, 249, 255, .2) 100%); color: #4c60b3; font-weight: 600; }
+      .miku-mode-tab.is-active::after { top: 7px; }
+      .miku-mode-tab.is-active:nth-of-type(1)::after { left: var(--miku-mode-english-inset, 20px); }
+      .miku-mode-tab.is-active:nth-of-type(2)::after { left: var(--miku-mode-english-inset, 20px); }
+      .miku-mode-tab.is-active:nth-of-type(3)::after { left: var(--miku-mode-english-inset, 20px); }
+      .miku-mode-tab:not(.is-active) > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: none; }
+      .miku-mode-tab.is-active { font-size: 16px; }
+      .miku-mode-tab.is-active .miku-mode-icon, .miku-mode-tab.is-active .miku-mode-icon svg, .miku-mode-tab.is-active .miku-mode-icon img { width: 18px; height: 18px; }
+      .miku-mode-tab.is-active > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: translateY(-4px); }
+      .miku-mode-tab.is-active .miku-mode-illustration { opacity: 1; transform: translate(0, 0); }
+      .miku-mode-tab:nth-of-type(3) .miku-mode-illustration { filter: saturate(.44) brightness(1.08) contrast(.9) drop-shadow(0 6px 8px rgba(22, 34, 53, .1)); }
+      .miku-mode-tab.is-active:nth-of-type(3) .miku-mode-illustration { opacity: .78; }
+      .miku-mode-detail { display: none; }
+      .miku-mode-detail::before { content: ""; display: block; width: 100%; height: 1px; background: rgba(108, 140, 244, .28); }
+      .miku-mode-background { display: none; }
       .miku-question-box { position: relative; z-index: 2; min-height: 132px; padding: 16px 20px; border: 1.6px solid rgba(210, 219, 233, .96); border-bottom: 0; border-radius: 28px; background: var(--surface); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
       .miku-composer-tab { position: absolute; top: 18px; left: 20px; z-index: 1; display: inline-flex; align-items: center; height: 20px; padding: 0 5px; border: 1px solid rgba(125, 132, 139, .42); border-radius: 10px; color: #7b8388; font-size: 14px; line-height: 1; }
       .miku-question-placeholder { position: absolute; top: 17px; left: 66px; right: 20px; z-index: 1; overflow: hidden; color: #929c9d; font-size: 15px; line-height: 22px; white-space: nowrap; text-overflow: ellipsis; pointer-events: none; transition: opacity .2s ease, transform .2s var(--ease); }
@@ -202,7 +229,7 @@
       #uploadButton > .icon-slot:first-child { width: 16px; height: 16px; }
       #modelButton > .icon-slot:last-child { width: 14px; height: 14px; }
       .miku-send-button-wrap { position: absolute; top: 50%; right: 24px; z-index: 4; width: 54px; height: 26px; border-radius: 999vw; background: transparent; pointer-events: none; transform: translateY(-50%); }
-      .miku-send-button { all: unset; cursor: pointer; position: relative; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; padding: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); pointer-events: auto; z-index: 3; display: inline-flex; align-items: center; justify-content: center; background: rgba(108, 140, 244, .52); border-radius: 999vw; color: #fff; box-shadow: none; transition: none; }
+      .miku-send-button { all: unset; cursor: pointer; position: relative; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; padding: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); pointer-events: auto; z-index: 3; display: inline-flex; align-items: center; justify-content: center; background: rgba(84, 107, 218, .86); border: 0; border-radius: 999vw; color: #fff; box-shadow: 0 5px 14px rgba(84, 107, 218, .24), 0 0 14px rgba(84, 107, 218, .08); transition: none; }
       .miku-send-button-label { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 0; user-select: none; -webkit-user-select: none; color: #fff; }
       .miku-send-button .icon-slot { position: relative; z-index: 3; width: 14px; height: 14px; color: #fff; }
       .miku-send-button .icon-slot svg { color: #fff; stroke: none; fill: currentColor; }
@@ -250,8 +277,10 @@
         .hero h1 { font-size: 32px; }
         .hero p { margin-top: 8px; font-size: 12px; }
         .miku-composer-section { --miku-row-height: 36px; margin-top: 88px; }
-        .miku-mode-tabs { gap: 4px; min-height: 38px; }
-        .miku-mode-tab { min-height: 30px; height: 30px; padding: 0 12px; gap: 7px; font-size: 14px; line-height: 30px; }
+        .miku-mode-tabs { --miku-tab-active-height: 72px; --miku-tab-inactive-height: 42px; gap: 8px; }
+        .miku-mode-tab { padding: 0 16px; gap: 8px; font-size: 14px; }
+        .miku-mode-detail { left: 16px; right: 16px; bottom: 14px; }
+        .miku-mode-tab.is-active > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: translateY(-3px); }
         .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 15px; height: 15px; }
         .miku-question-box { min-height: 120px; padding-top: 15px; padding-bottom: 15px; }
         .miku-question-input { min-height: 90px; }
@@ -273,8 +302,10 @@
         .topbar { min-height: 40px; }
         .hero { padding-top: 48px; }
         .miku-composer-section { --miku-row-height: 40px; width: 100%; margin-top: 64px; }
-        .miku-mode-tabs { width: 100%; min-height: 36px; gap: 3px; padding: 3px; }
-        .miku-mode-tab { min-width: 0; flex: 1 1 0; min-height: 30px; height: 30px; padding: 0 8px; gap: 5px; font-size: 13px; line-height: 30px; white-space: nowrap; }
+        .miku-mode-tabs { --miku-tab-active-height: 62px; --miku-tab-inactive-height: 36px; width: 100%; margin-left: 0; gap: 5px; padding: 0 1px; }
+        .miku-mode-tab { --miku-mode-english-inset: 10px; min-width: 0; flex: 1 1 0; padding: 0 10px; gap: 5px; font-size: 13px; white-space: nowrap; }
+        .miku-mode-tab.is-active > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: translateY(-2px); }
+        .miku-mode-detail { left: 10px; right: 10px; bottom: 10px; font-size: 10px; line-height: 14px; }
         .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img { width: 16px; height: 16px; }
         .miku-question-box { min-height: 150px; padding: 17px; }
         .miku-question-input { min-height: 108px; font-size: 14px; }
@@ -290,6 +321,14 @@
         .template-library-header { overflow-x: auto; gap: 14px; }
         .template-tabs { gap: 16px; }
         .template-grid { gap: 10px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .miku-mode-tab { transition: color .18s ease; }
+        .miku-mode-tab::before, .miku-mode-tab::after, .miku-mode-detail { transition: none; }
+        .miku-mode-icon, .miku-mode-icon svg, .miku-mode-icon img,
+        .miku-mode-tab > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transition: none; }
+        .miku-mode-tab.is-active > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: none; }
       }
     </style>
   </head>
@@ -325,8 +364,8 @@
         </section>
 
         <div class="sidebar-bottom">
-          <button class="upgrade" type="button" id="upgradeButton"><span class="icon-slot">{{SPARK}}</span><span>Upgrade to Pro</span></button>
-          <div class="profile"><span class="profile-mark">S</span><span>Signed in</span></div>
+          <button class="upgrade" type="button" id="upgradeButton"><span class="icon-slot">{{SPARK}}</span><span>升级专业版</span></button>
+          <div class="profile"><span class="profile-mark">苏</span><span>已登录</span></div>
         </div>
       </aside>
 
@@ -359,9 +398,9 @@
           </svg>
           <div class="miku-mode-tabs" role="tablist" aria-label="对话类型">
             <span class="miku-tab-indicator" aria-hidden="true"></span>
-            <button class="miku-mode-tab is-active" type="button" role="tab" aria-selected="true"><span class="icon-slot miku-mode-icon">{{PLAN}}</span><span>方案策划</span><span class="miku-mode-background" aria-hidden="true"></span></button>
-            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{IMAGE}}</span><span>图片生成</span><span class="miku-mode-background" aria-hidden="true"></span></button>
-            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="icon-slot miku-mode-icon">{{VIDEO}}</span><span>视频生成</span><span class="miku-mode-background" aria-hidden="true"></span></button>
+            <button class="miku-mode-tab is-active" type="button" role="tab" aria-selected="true"><span class="miku-mode-indicator miku-mode-shape-idle" aria-hidden="true"><svg viewBox="0 0 168.46875 57" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-idle-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d9d9"></stop><stop offset="1" stop-color="rgba(255,255,255,.05)"></stop></linearGradient><linearGradient id="miku-tab-stroke-idle-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,.08)"></stop><stop offset="1" stop-color="rgba(255,255,255,.008)"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H156.46875 C163.09635 21.92 168.46875 27.2924 168.46875 33.92 V57 H0 Z" fill="url(#miku-tab-fill-idle-1)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H155.46875 C162.09635 21.92 167.46875 27.2924 167.46875 33.92 V56 H0 Z" fill="none" stroke="url(#miku-tab-stroke-idle-1)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><span class="miku-mode-indicator miku-mode-shape-active" aria-hidden="true"><svg viewBox="0 0 285.9453125 127" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-active-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d9d9"></stop><stop offset="1" stop-color="rgba(255,255,255,.05)"></stop></linearGradient><linearGradient id="miku-tab-stroke-active-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,.08)"></stop><stop offset="1" stop-color="rgba(255,255,255,.008)"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H273.9453125 C280.5729125 21.92 285.9453125 27.2924 285.9453125 33.92 V127 H0 Z" fill="url(#miku-tab-fill-active-1)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H272.9453125 C279.5729125 27.2924 284.9453125 27.2924 284.9453125 33.92 V126 H0 Z" fill="none" stroke="url(#miku-tab-stroke-active-1)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><img class="miku-mode-illustration" src="./assets/miora/plan-agent-wide.png" alt="" aria-hidden="true"><span class="icon-slot miku-mode-icon">{{PLAN}}</span><span>方案策划</span><span class="miku-mode-detail" aria-hidden="true">把想法整理成可执行的内容方案</span><span class="miku-mode-background" aria-hidden="true"></span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="miku-mode-indicator miku-mode-shape-idle" aria-hidden="true"><svg viewBox="0 0 168.46875 57" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-idle-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e8eb"></stop><stop offset="1" stop-color="#f7f8f7"></stop></linearGradient><linearGradient id="miku-tab-stroke-idle-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d5dbe0"></stop><stop offset="1" stop-color="#eef0f1"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H156.46875 C163.09635 21.92 168.46875 27.2924 168.46875 33.92 V57 H0 Z" fill="url(#miku-tab-fill-idle-2)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H155.46875 C162.09635 21.92 167.46875 27.2924 167.46875 33.92 V56 H0 Z" fill="none" stroke="url(#miku-tab-stroke-idle-2)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><span class="miku-mode-indicator miku-mode-shape-active" aria-hidden="true"><svg viewBox="0 0 285.9453125 127" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-active-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e8eb"></stop><stop offset="1" stop-color="#f7f8f7"></stop></linearGradient><linearGradient id="miku-tab-stroke-active-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d5dbe0"></stop><stop offset="1" stop-color="#eef0f1"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H273.9453125 C280.5729125 21.92 285.9453125 27.2924 285.9453125 33.92 V127 H0 Z" fill="url(#miku-tab-fill-active-2)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H272.9453125 C279.5729125 21.92 284.9453125 27.2924 284.9453125 33.92 V126 H0 Z" fill="none" stroke="url(#miku-tab-stroke-active-2)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><img class="miku-mode-illustration" src="./assets/miora/image-agent-wide.png" alt="" aria-hidden="true"><span class="icon-slot miku-mode-icon">{{IMAGE}}</span><span>图片生成</span><span class="miku-mode-detail" aria-hidden="true">从一句描述生成可直接使用的视觉素材</span><span class="miku-mode-background" aria-hidden="true"></span></button>
+            <button class="miku-mode-tab" type="button" role="tab" aria-selected="false"><span class="miku-mode-indicator miku-mode-shape-idle" aria-hidden="true"><svg viewBox="0 0 168.46875 57" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-idle-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e8eb"></stop><stop offset="1" stop-color="#f7f8f7"></stop></linearGradient><linearGradient id="miku-tab-stroke-idle-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d5dbe0"></stop><stop offset="1" stop-color="#eef0f1"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H156.46875 C163.09635 21.92 168.46875 27.2924 168.46875 33.92 V57 H0 Z" fill="url(#miku-tab-fill-idle-3)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H46.46 C48.014 0 49.553 0.302 50.992 0.888 L100.384 21.031 C101.823 21.618 103.362 21.92 104.916 21.92 H155.46875 C162.09635 21.92 167.46875 27.2924 167.46875 33.92 V56 H0 Z" fill="none" stroke="url(#miku-tab-stroke-idle-3)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><span class="miku-mode-indicator miku-mode-shape-active" aria-hidden="true"><svg viewBox="0 0 285.9453125 127" preserveAspectRatio="none"><defs><linearGradient id="miku-tab-fill-active-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e8eb"></stop><stop offset="1" stop-color="#f7f8f7"></stop></linearGradient><linearGradient id="miku-tab-stroke-active-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d5dbe0"></stop><stop offset="1" stop-color="#eef0f1"></stop></linearGradient></defs><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H273.9453125 C280.5729125 21.92 285.9453125 27.2924 285.9453125 33.92 V127 H0 Z" fill="url(#miku-tab-fill-active-3)"></path><path d="M0 12 C0 5.3724 5.3724 0 12 0 H105.147 C106.701 0 108.24 0.302 109.679 0.888 L159.071 21.031 C160.51 21.618 162.049 21.92 163.603 21.92 H272.9453125 C279.5729125 21.92 284.9453125 27.2924 284.9453125 33.92 V126 H0 Z" fill="none" stroke="url(#miku-tab-stroke-active-3)" stroke-width="1" transform="translate(.5 .5)"></path></svg></span><img class="miku-mode-illustration" src="./assets/miora/video-agent-wide.png" alt="" aria-hidden="true"><span class="icon-slot miku-mode-icon">{{VIDEO}}</span><span>视频生成</span><span class="miku-mode-detail" aria-hidden="true">从脚本到镜头，快速完成短视频创作</span><span class="miku-mode-background" aria-hidden="true"></span></button>
           </div>
           <div class="miku-question-box">
             <span class="miku-composer-tab" aria-hidden="true">Tab</span>
