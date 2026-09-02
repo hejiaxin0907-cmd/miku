@@ -191,7 +191,7 @@
       .miku-mode-shape-active { opacity: 0; }
       .miku-mode-tab.is-active .miku-mode-shape-idle { opacity: 0; }
       .miku-mode-tab.is-active .miku-mode-shape-active { opacity: 1; }
-      .miku-mode-illustration { position: absolute; top: -18px; right: 2px; z-index: 0; display: block; width: min(160px, 72%); height: 80px; object-fit: contain; opacity: 0; transform: translate(0, 8px); filter: drop-shadow(0 6px 8px rgba(22, 34, 53, .1)); transition: opacity .2s ease, transform .28s var(--ease); pointer-events: none; }
+      .miku-mode-illustration { position: absolute; top: -18px; right: 18px; z-index: 0; display: block; width: min(160px, 72%); height: 80px; object-fit: contain; opacity: .26; transform: translateY(4px) scale(.5); transform-origin: right center; filter: drop-shadow(0 4px 7px rgba(22, 34, 53, .06)); transition: opacity .28s var(--ease), transform .34s var(--ease), filter .28s ease; pointer-events: none; }
       .miku-mode-tab:not(.is-active):hover { color: #697174; }
       .miku-mode-tab.is-active { z-index: 2; flex-grow: 1.45; height: var(--miku-tab-active-height); background: linear-gradient(180deg, #e6ecfb 0%, rgba(247, 249, 255, .2) 100%); color: #4c60b3; font-weight: 600; }
       .miku-mode-tab.is-active::after { top: 7px; }
@@ -202,7 +202,7 @@
       .miku-mode-tab.is-active { font-size: 16px; }
       .miku-mode-tab.is-active .miku-mode-icon, .miku-mode-tab.is-active .miku-mode-icon svg, .miku-mode-tab.is-active .miku-mode-icon img { width: 18px; height: 18px; }
       .miku-mode-tab.is-active > *:not(.miku-mode-background):not(.miku-mode-detail):not(.miku-mode-illustration):not(.miku-mode-indicator) { transform: translateY(-4px); }
-      .miku-mode-tab.is-active .miku-mode-illustration { opacity: 1; transform: translate(0, 0); }
+      .miku-mode-tab.is-active .miku-mode-illustration { opacity: 1; transform: scale(1); filter: drop-shadow(0 6px 8px rgba(22, 34, 53, .1)); }
       .miku-mode-tab:nth-of-type(3) .miku-mode-illustration { filter: saturate(.44) brightness(1.08) contrast(.9) drop-shadow(0 6px 8px rgba(22, 34, 53, .1)); }
       .miku-mode-tab.is-active:nth-of-type(3) .miku-mode-illustration { opacity: .78; }
       .miku-mode-detail { display: none; }
